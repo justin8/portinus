@@ -7,9 +7,9 @@ log = logging.getLogger(__name__)
 
 class Service(object):
 
-    def __init__(self, name, content=None):
+    def __init__(self, name, unit_type='service', content=None):
         self.name = name
-        self.service_name = f"portinus-{name}.service"
+        self.service_name = f"portinus-{name}.{unit_type}"
         self.service_file_path = os.path.join('/etc/systemd/system', self.service_name)
         self._content = content
 
