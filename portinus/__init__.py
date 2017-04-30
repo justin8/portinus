@@ -1,8 +1,21 @@
-import subprocess
 import logging
+import os
+
+from jinja2 import Template
 
 from .cli import task
 from . import portinus, restart, systemd, monitor
+
+_script_dir = os.path.dirname(os.path.realpath(__file__))
+template_dir = os.path.join(_script_dir, 'templates')
+
+
+def get_template(file_name):
+    template_file = os.path.join(template_dir, file_name)
+    with open(template_file) as f:
+        template_contents = f.read()
+
+    return Template(template_contents)
 
 
 class Application(object):

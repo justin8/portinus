@@ -5,10 +5,10 @@ import logging
 
 from jinja2 import Template
 
+import portinus
 from . import systemd
 
 _PORTINUS_SERVICE_DIR = '/usr/local/portinus-services'
-template_dir = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'templates')
 log = logging.getLogger(__name__)
 
 
@@ -23,14 +23,12 @@ class Service(object):
     def exists(self):
         return os.path.isdir(self._source.path)
 
-    def _get_service_file(self):
-        template_file = os.path.join(template_dir, "portinus-instance.service")
+    def _generate_service_file(self):
         start_command = f"{self._source.service_script} up"
         stop_command = f"{self._source.service_script} down"
-        with open(template_file) as f:
-            raw_template = Template(f.read())
 
-        return raw_template.render(
+        template = portinus.get_template('portinus-instance.service')
+        return template.render(
             name=self.name,
             environment_file=self._environment_file,
             start_command=start_command,
@@ -39,9 +37,8 @@ class Service(object):
 
     def ensure(self):
         self._source.ensure()
-        self._systemd_service.set_content(self._get_service_file())
+        self._systemd_service.set_content(self._generate_service_file())
         self._systemd_service.ensure()
-
 
     def remove(self):
         self._systemd_service.remove()
@@ -65,7 +62,7 @@ class _ComposeSource(object):
                 raise(e)
 
     def _generate_service_script(self):
-        service_script_template = os.path.join(template_dir, "service-script")
+        service_script_template = os.path.join(portinus.template_dir, "service-script")
         shutil.copy(service_script_template, self.service_script)
         os.chmod(self.service_script, 0o755)
 
