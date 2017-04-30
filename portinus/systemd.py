@@ -18,6 +18,7 @@ class Service(object):
         except FileNotFoundError as e:
             log.error("Unable to find systemctl!")
             raise(e)
+        log.debug(f"Initialized systemd.Service for '{name}' with type '{type}'")
 
     def _systemctl(self, args):
         try:

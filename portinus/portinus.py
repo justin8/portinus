@@ -18,6 +18,7 @@ class Service(object):
         self._source = _ComposeSource(name, source)
         self._systemd_service = systemd.Service(name)
         self._environment_file = environment_file
+        log.debug(f"Initialized portinus.Service for '{name}' with source: '{source}', and environment file: '{environment_file}'")
 
     def exists(self):
         return os.path.isdir(portinus.get_instance_dir(self.name))
@@ -35,10 +36,12 @@ class Service(object):
             )
 
     def ensure(self):
+        log.info(f"Creating/updating {self.name} portinus instance")
         self._source.ensure()
         self._systemd_service.ensure(content=self._generate_service_file())
 
     def remove(self):
+        log.info(f"Removing {self.name} portinus instance")
         self._systemd_service.remove()
         self._source.remove()
 
@@ -58,6 +61,7 @@ class _ComposeSource(object):
             except Exception as e:
                 log.error(f"Unable to access the specified source docker compose file in (#{source})")
                 raise(e)
+        log.debug(f"Initialized ComposeSource for '{name}' from source: '{source}'")
 
     def _ensure_service_script(self):
         service_script_template = os.path.join(portinus.template_dir, "service-script")
