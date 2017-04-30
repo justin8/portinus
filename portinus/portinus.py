@@ -8,7 +8,6 @@ from jinja2 import Template
 import portinus
 from . import systemd
 
-_PORTINUS_SERVICE_DIR = '/usr/local/portinus-services'
 log = logging.getLogger(__name__)
 
 
@@ -21,13 +20,13 @@ class Service(object):
         self._environment_file = environment_file
 
     def exists(self):
-        return os.path.isdir(self._source.path)
+        return os.path.isdir(portinus.get_instance_dir(self.name))
 
     def _generate_service_file(self):
         start_command = f"{self._source.service_script} up"
         stop_command = f"{self._source.service_script} down"
 
-        template = portinus.get_template('portinus-instance.service')
+        template = portinus.get_template("portinus-instance.service")
         return template.render(
             name=self.name,
             environment_file=self._environment_file,
@@ -50,12 +49,12 @@ class _ComposeSource(object):
     def __init__(self, name, source):
         self.name = name
         self._source = source
-        self.path = os.path.join(_PORTINUS_SERVICE_DIR, name)
+        self.path = portinus.get_instance_dir(name)
         self.service_script = os.path.join(self.path, name)
 
         if source:
             try:
-                with open(os.path.join(source, 'docker-compose.yml')):
+                with open(os.path.join(source, "docker-compose.yml")):
                     pass
             except Exception as e:
                 log.error(f"Unable to access the specified source docker compose file in (#{source})")
@@ -90,7 +89,7 @@ class EnvironmentFile(object):
     def __init__(self, name, source_environment_file=None):
         self.name = name
         self._source_environment_file = source_environment_file
-        self.path = os.path.join(_PORTINUS_SERVICE_DIR, name + '.environment')
+        self.path = portinus.get_instance_dir(self.name) + ".environment"
         log.debug(f"Initialized EnvironmentFile for '{name}' from source: '{source_environment_file}'")
 
         if source_environment_file:

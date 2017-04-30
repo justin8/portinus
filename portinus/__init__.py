@@ -8,6 +8,11 @@ from . import portinus, restart, systemd, monitor
 
 _script_dir = os.path.dirname(os.path.realpath(__file__))
 template_dir = os.path.join(_script_dir, 'templates')
+service_dir = '/usr/local/portinus-services'
+
+
+def get_instance_dir(name):
+    return os.path.join(service_dir, name)
 
 
 def get_template(file_name):
