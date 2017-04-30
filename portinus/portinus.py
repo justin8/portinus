@@ -5,80 +5,19 @@ import logging
 
 from jinja2 import Template
 
+from . import systemd
+
 _PORTINUS_SERVICE_DIR = '/usr/local/portinus-services'
-_SYSTEMD_SERVICE_PATH = '/etc/systemd/system'
 _LOCAL_PATH = os.path.dirname(os.path.realpath(__file__))
 log = logging.getLogger()
 
 
 class Service(object):
 
-    def __init__(self, name, source=None, environment_file=None, restart_schedule=None):
-        self.name = name
-        self._service = _Service(name, source)
-        self._environment_file = EnvironmentFile(name, environment_file)
-        self._restart_timer = RestartTimer(name, restart_schedule) if restart_schedule else None
-        self._monitor_service = MonitorService(name)
-
-        try:
-            subprocess.check_output(['systemctl', '--help'])
-        except FileNotFoundError as e:
-            log.error("Unable to find systemctl!")
-            raise(e)
-
-    def exists(self):
-        return self._service.exists()
-
-    def ensure(self):
-        self._environment_file.ensure()
-        self._service.ensure(self._environment_file)
-        #self._restart_timer.ensure()
-        #self._monitor_service.ensure()
-
-    def remove(self):
-        self._environment_file.remove()
-        self._service.remove()
-        #self._restart_timer.remove()
-        #self._monitor_service.remove()
-        pass
-
-
-class _SystemdService(object):
-
-    def __init__(self, name):
-        self.name = name
-        self.service_name = f"portinus-{name}.service"
-        self.service_file_path = os.path.join(_SYSTEMD_SERVICE_PATH, self.service_name)
-
-    def _systemctl(self, args):
-        try:
-            subprocess.call(["systemctl"] + args)
-        except subprocess.CalledProcessError as e:
-            log.error(f"Failed to run systemctl with parameters #{args}")
-            raise(e)
-
-    def reload(self):
-        self._systemctl(['daemon-reload'])
-
-    def restart(self):
-        self._systemctl(["restart", self.service_name])
-
-    def stop(self):
-        self._systemctl(["stop", self.service_name])
-
-    def enable(self):
-        self._systemctl(["enable", self.service_name])
-
-    def disable(self):
-        self._systemctl(["disable", self.service_name])
-
-
-class _Service(object):
-
     def __init__(self, name, source):
         self.name = name
         self._source = _ComposeSource(name, source)
-        self._systemd_service = _SystemdService(name)
+        self._systemd_service = systemd.Service(name)
 
     def exists(self):
         return os.path.isdir(self._source.path)
@@ -183,29 +122,3 @@ class EnvironmentFile(object):
             os.remove(self.path)
         except FileNotFoundError:
             pass
-
-
-class RestartTimer(object):
-    # TODO
-
-    def __init__(self, name, restart_schedule):
-        pass
-
-    def ensure(self):
-        pass
-
-    def remove(self):
-        pass
-
-
-class MonitorService(object):
-    # TODO
-
-    def __init__(self, name):
-        pass
-
-    def ensure(self):
-        pass
-
-    def remove(self):
-        pass

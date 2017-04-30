@@ -21,7 +21,7 @@ setup(
     test_suite="nose.collector",
     entry_points={
         "console_scripts": [
-            "portinus=portinus:_task"
+            "portinus=portinus.cli:task"
         ]
     },
     classifiers=[
