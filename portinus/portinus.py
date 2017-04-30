@@ -36,8 +36,7 @@ class Service(object):
 
     def ensure(self):
         self._source.ensure()
-        self._systemd_service.set_content(self._generate_service_file())
-        self._systemd_service.ensure()
+        self._systemd_service.ensure(content=self._generate_service_file())
 
     def remove(self):
         self._systemd_service.remove()

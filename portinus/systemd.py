@@ -34,7 +34,8 @@ class Service(object):
         with open(self.service_file_path, 'w') as f:
             f.write(self._content)
 
-    def ensure(self, restart=True, enable=True):
+    def ensure(self, restart=True, enable=True, content=None):
+        if content: self.set_content(content)
         self.create_service_file()
         self.reload()
         if restart: self.restart()
