@@ -34,11 +34,11 @@ class Service(object):
         with open(self.service_file_path, 'w') as f:
             f.write(self._content)
 
-    def ensure(self):
+    def ensure(self, restart=True, enable=True):
         self.create_service_file()
         self.reload()
-        self.restart()
-        self.enable()
+        if restart: self.restart()
+        if enable: self.enable()
 
     def remove(self):
         try:
