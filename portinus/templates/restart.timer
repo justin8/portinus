@@ -3,6 +3,7 @@ Description=Restart timer for {{ name }} service
 
 [Timer]
 OnCalendar={{ restart_schedule }}
+RandomizedDelaySec=600
 
 [Install]
 WantedBy=timers.target

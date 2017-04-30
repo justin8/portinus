@@ -27,7 +27,7 @@ class Service(object):
         start_command = f"{self._source.service_script} up"
         stop_command = f"{self._source.service_script} down"
 
-        template = portinus.get_template("portinus-instance.service")
+        template = portinus.get_template("instance.service")
         return template.render(
             name=self.name,
             environment_file=self._environment_file,

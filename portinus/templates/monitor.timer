@@ -1,0 +1,8 @@
+[Unit]
+Description=Monitor timer for {{ name }} service
+
+[Timer]
+OnActiveSec=5m
+
+[Install]
+WantedBy=timers.target

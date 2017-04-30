@@ -19,7 +19,7 @@ class Timer(object):
         return bool(self.restart_schedule)
 
     def _generate_service_file(self):
-        template_file = portinus.get_template("portinus-restart.service")
+        template_file = portinus.get_template("restart.service")
         instance_service = systemd.Service(self.name)
 
         return template_file.render(
@@ -28,7 +28,7 @@ class Timer(object):
                 )
 
     def _generate_timer_file(self):
-        template_file = portinus.get_template("portinus-restart.timer")
+        template_file = portinus.get_template("restart.timer")
 
         return template_file.render(
                 name=self.name,
