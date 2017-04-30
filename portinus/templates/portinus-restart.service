@@ -1,1 +1,7 @@
+[Unit]
+Description=Restart module for {{ name }} service
+After=network.target docker.service
 
+[Service]
+Type=oneshot
+ExecStart=/usr/bin/systemctl restart {{ service_name }}

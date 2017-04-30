@@ -31,7 +31,7 @@ class Application(object):
         self.name = name
         self._environment_file = portinus.EnvironmentFile(name, environment_file)
         self._service = portinus.Service(name, source, self._environment_file)
-        #self._restart_timer = restart.Timer(name, restart_schedule)
+        self._restart_timer = restart.Timer(name, restart_schedule=restart_schedule)
         #self._monitor_service = monitor.Service(name)
 
     def exists(self):
@@ -40,12 +40,11 @@ class Application(object):
     def ensure(self):
         self._environment_file.ensure()
         self._service.ensure()
-        #self._restart_timer.ensure()
+        self._restart_timer.ensure()
         #self._monitor_service.ensure()
 
     def remove(self):
         self._service.remove()
         self._environment_file.remove()
-        #self._restart_timer.remove()
+        self._restart_timer.remove()
         #self._monitor_service.remove()
-        pass

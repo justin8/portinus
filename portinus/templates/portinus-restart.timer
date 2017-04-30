@@ -1,1 +1,8 @@
+[Unit]
+Description=Restart timer for {{ name }} service
 
+[Timer]
+OnCalendar={{ restart_schedule }}
+
+[Install]
+WantedBy=timers.target
