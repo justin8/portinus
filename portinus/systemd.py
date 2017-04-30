@@ -7,14 +7,14 @@ log = logging.getLogger(__name__)
 
 class Service(object):
 
-    def __init__(self, name, unit_type='service', content=None):
+    def __init__(self, name, type="service", content=None):
         self.name = name
-        self.service_name = f"portinus-{name}.{unit_type}"
-        self.service_file_path = os.path.join('/etc/systemd/system', self.service_name)
+        self.service_name = f"portinus-{name}.{type}"
+        self.service_file_path = os.path.join("/etc/systemd/system", self.service_name)
         self._content = content
 
         try:
-            subprocess.check_output(['systemctl', '--help'])
+            subprocess.check_output(["systemctl", "--help"])
         except FileNotFoundError as e:
             log.error("Unable to find systemctl!")
             raise(e)
@@ -32,7 +32,7 @@ class Service(object):
 
     def create_service_file(self):
         log.info(f"Creating/updating service file for '{self.name}' at '{self.service_file_path}'")
-        with open(self.service_file_path, 'w') as f:
+        with open(self.service_file_path, "w") as f:
             f.write(self._content)
 
     def ensure(self, restart=True, enable=True, content=None):
@@ -59,7 +59,7 @@ class Service(object):
 
     def reload(self):
         log.info("Reloading daemon files")
-        self._systemctl(['daemon-reload'])
+        self._systemctl(["daemon-reload"])
 
     def restart(self):
         log.info(f"Restarting {self.service_name}")
