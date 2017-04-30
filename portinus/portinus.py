@@ -8,28 +8,29 @@ from jinja2 import Template
 from . import systemd
 
 _PORTINUS_SERVICE_DIR = '/usr/local/portinus-services'
-_LOCAL_PATH = os.path.dirname(os.path.realpath(__file__))
+template_dir = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'templates')
 log = logging.getLogger()
 
 
 class Service(object):
 
-    def __init__(self, name, source):
+    def __init__(self, name, source, environment_file):
         self.name = name
         self._source = _ComposeSource(name, source)
         self._systemd_service = systemd.Service(name)
+        self._environment_file = environment_file
 
     def exists(self):
         return os.path.isdir(self._source.path)
 
-    def ensure(self, environment_file):
+    def ensure(self):
         self._source.ensure()
-        self._ensure_service_file(environment_file)
+        self._ensure_service_file()
         self._systemd_service.restart()
         self._systemd_service.enable()
 
-    def _ensure_service_file(self, environment_file):
-        template_file = os.path.join(_LOCAL_PATH, "templates", "portinus-instance.service")
+    def _ensure_service_file(self):
+        template_file = os.path.join(template_dir, "portinus-instance.service")
         target = self._systemd_service.service_file_path
         start_command = f"{self._source.service_script} up"
         stop_command = f"{self._source.service_script} down"
@@ -39,17 +40,23 @@ class Service(object):
 
         with open(target, 'w') as f:
             f.write(service_template.render(name=self.name,
-                                            environment_file_path=environment_file,
+                                            environment_file_path=self._environment_file,
                                             start_command=start_command,
                                             stop_command=stop_command,
                                             ))
 
         self._systemd_service.reload()
 
+    def _remove_service_file(self):
+        try:
+            os.remove(self._systemd_service.service_file_path)
+        except FileNotFoundError:
+            pass
+
     def remove(self):
         self._systemd_service.stop()
         self._systemd_service.disable()
-        os.remove(self._systemd_service.service_file_path)
+        self._remove_service_file
         self._source.remove()
         self._systemd_service.reload()
         pass
@@ -72,7 +79,7 @@ class _ComposeSource(object):
                 raise(e)
 
     def _generate_service_script(self):
-        service_script_template = os.path.join(_LOCAL_PATH, "templates", "service-script")
+        service_script_template = os.path.join(template_dir, "service-script")
         shutil.copy(service_script_template, self.service_script)
         os.chmod(self.service_script, 0o755)
 
@@ -112,10 +119,7 @@ class EnvironmentFile(object):
         if self:
             shutil.copy(self._source_environment_file, self.path)
         else:
-            try:
-                os.remove(self.path)
-            except:
-                pass
+            self.remove()
 
     def remove(self):
         try:
