@@ -60,7 +60,7 @@ class _ComposeSource(object):
                 log.error(f"Unable to access the specified source docker compose file in (#{source})")
                 raise(e)
 
-    def _generate_service_script(self):
+    def _ensure_service_script(self):
         service_script_template = os.path.join(portinus.template_dir, "service-script")
         shutil.copy(service_script_template, self.service_script)
         os.chmod(self.service_script, 0o755)
@@ -72,7 +72,7 @@ class _ComposeSource(object):
         log.info("Copying source files for '{self.name}' to '{self.path}'")
         self.remove()
         shutil.copytree(self._source, self.path, symlinks=True, copy_function=shutil.copy)
-        self._generate_service_script()
+        self._ensure_service_script()
         log.debug("Successfully copied source files")
 
     def remove(self):
