@@ -4,12 +4,14 @@ import subprocess
 
 log = logging.getLogger(__name__)
 
+
 class Service(object):
 
-    def __init__(self, name):
+    def __init__(self, name, content=None):
         self.name = name
         self.service_name = f"portinus-{name}.service"
         self.service_file_path = os.path.join('/etc/systemd/system', self.service_name)
+        self._content = content
 
         try:
             subprocess.check_output(['systemctl', '--help'])
@@ -23,6 +25,35 @@ class Service(object):
         except subprocess.CalledProcessError as e:
             log.error(f"Failed to run systemctl with parameters #{args}")
             raise(e)
+
+    def set_content(self, content):
+        self._content = content
+
+    def create_service_file(self):
+        log.info(f"Creating/updating service file for '{self.name}' at '{self.service_file_path}'")
+        with open(self.service_file_path, 'w') as f:
+            f.write(self._content)
+
+    def ensure(self):
+        self.create_service_file()
+        self.reload()
+        self.restart()
+        self.enable()
+
+    def remove(self):
+        try:
+            self.stop()
+            self.disable()
+        except:
+            pass
+
+        log.info(f"Removing service file for {self.name} from {self.service_file_path}")
+        try:
+            os.remove(self.service_file_path)
+            log.debug("Successfully removed service file")
+        except FileNotFoundError:
+            log.debug("No service file found")
+        self.reload()
 
     def reload(self):
         log.info("Reloading daemon files")

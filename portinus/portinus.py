@@ -23,46 +23,29 @@ class Service(object):
     def exists(self):
         return os.path.isdir(self._source.path)
 
-    def ensure(self):
-        self._source.ensure()
-        self._ensure_service_file()
-        self._systemd_service.restart()
-        self._systemd_service.enable()
-
-    def _ensure_service_file(self):
+    def _get_service_file(self):
         template_file = os.path.join(template_dir, "portinus-instance.service")
-        target = self._systemd_service.service_file_path
         start_command = f"{self._source.service_script} up"
         stop_command = f"{self._source.service_script} down"
-        log.info(f"Creating/updating service file for '{self.name}' at '{target}'")
-
         with open(template_file) as f:
-            service_template = Template(f.read())
+            raw_template = Template(f.read())
 
-        with open(target, 'w') as f:
-            f.write(service_template.render(name=self.name,
-                                            environment_file_path=self._environment_file,
-                                            start_command=start_command,
-                                            stop_command=stop_command,
-                                            ))
+        return raw_template.render(
+            name=self.name,
+            environment_file=self._environment_file,
+            start_command=start_command,
+            stop_command=stop_command,
+            )
 
-        self._systemd_service.reload()
+    def ensure(self):
+        self._source.ensure()
+        self._systemd_service.set_content(self._get_service_file())
+        self._systemd_service.ensure()
 
-    def _remove_service_file(self):
-        log.info(f"Removing service file for {self.name} from {self._systemd_service.service_file_path}")
-        try:
-            os.remove(self._systemd_service.service_file_path)
-            log.debug("Successfully removed service file")
-        except FileNotFoundError:
-            log.debug("No service file found")
 
     def remove(self):
-        self._systemd_service.stop()
-        self._systemd_service.disable()
-        self._remove_service_file
+        self._systemd_service.remove()
         self._source.remove()
-        self._systemd_service.reload()
-        pass
 
 
 class _ComposeSource(object):
@@ -90,9 +73,11 @@ class _ComposeSource(object):
         if not self._source:
             log.error("No valid source specified")
             raise(IOError("No valid source specified"))
+        log.info("Copying source files for '{self.name}' to '{self.path}'")
         self.remove()
         shutil.copytree(self._source, self.path, symlinks=True, copy_function=shutil.copy)
         self._generate_service_script()
+        log.debug("Successfully copied source files")
 
     def remove(self):
         log.info(f"Removing source files for '{self.name}' from '{self.path}'")
