@@ -22,7 +22,7 @@ class Service(object):
 
     def _systemctl(self, args):
         try:
-            output = subprocess.call(["systemctl"] + args)
+            output = subprocess.check_output(["systemctl"] + args)
         except subprocess.CalledProcessError as e:
             log.error(f"Failed to run systemctl with parameters #{args}")
             raise(e)
@@ -46,7 +46,7 @@ class Service(object):
         try:
             self.stop()
             self.disable()
-        except:
+        except subprocess.CalledProcessError:
             pass
 
         log.info(f"Removing service file for {self.name} from {self.service_file_path}")

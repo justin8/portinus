@@ -3,7 +3,7 @@ from setuptools import setup, find_packages
 
 setup(
     name="portinus",
-    version="0.8.0",
+    version="0.9.0",
     author="Justin Dray",
     author_email="justin@dray.be",
     url="https://github.com/justin8/portinus",
@@ -21,7 +21,8 @@ setup(
     test_suite="nose.collector",
     entry_points={
         "console_scripts": [
-            "portinus=portinus.cli:task"
+            "portinus=portinus.cli:task",
+            "portinus-monitor=portinus.monitor.cli:task",
         ]
     },
     classifiers=[

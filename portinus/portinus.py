@@ -15,7 +15,7 @@ class Service(object):
 
     def __init__(self, name, source, environment_file):
         self.name = name
-        self._source = _ComposeSource(name, source)
+        self._source = ComposeSource(name, source)
         self._systemd_service = systemd.Service(name)
         self._environment_file = environment_file
         log.debug(f"Initialized portinus.Service for '{name}' with source: '{source}', and environment file: '{environment_file}'")
@@ -46,7 +46,7 @@ class Service(object):
         self._source.remove()
 
 
-class _ComposeSource(object):
+class ComposeSource(object):
 
     def __init__(self, name, source):
         self.name = name

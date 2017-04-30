@@ -38,8 +38,8 @@ class Timer(object):
     def ensure(self):
         if self:
             log.info(f"Creating/updating {self.name} restart timer")
-            self._systemd_timer.ensure(content=self._generate_timer_file())
             self._systemd_service.ensure(content=self._generate_service_file(), restart=False, enable=False)
+            self._systemd_timer.ensure(content=self._generate_timer_file())
         else:
             log.info(f"No restart schedule specified for {self.name}. Removing any existing restart timers")
             self.remove()
