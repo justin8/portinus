@@ -2,6 +2,7 @@
 
 import click
 import logging
+import sys
 
 import portinus
 
@@ -22,7 +23,10 @@ def task(verbose):
 @task.command()
 @click.option('--name', required=True, help="The name of the service to remove")
 def remove(name):
-    service = portinus.Application(name)
+    try:
+        service = portinus.Application(name)
+    except PermissionError:
+        sys.exit(1)
     service.remove()
 
 
@@ -32,7 +36,10 @@ def remove(name):
 @click.option('--env', help="A file containing the list of environment variables to use")
 @click.option('--restart', help="Provide a systemd 'OnCalender' scheduling string to force a restart of the service on the specified interval (e.g. 'weekly' or 'daily')")
 def ensure(name, source, env, restart):
-    service = portinus.Application(name, source=source, environment_file=env, restart_schedule=restart)
+    try:
+        service = portinus.Application(name, source=source, environment_file=env, restart_schedule=restart)
+    except PermissionError:
+        sys.exit(1)
     service.ensure()
 
 

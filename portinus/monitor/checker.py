@@ -1,13 +1,23 @@
 import docker
 import logging
+import os
 import subprocess
+import sys
 
 import portinus
 
 log = logging.getLogger(__name__)
 
 
+def check_permissions():
+    if os.geteuid() != 0:
+        log.error("This script must be run as root!")
+        raise PermissionError("You must be root")
+
+
 def run(name):
+    check_permissions()
+
     systemd_service = portinus.systemd.Service(name)
     monitored_compose_containers = get_monitored_compose_containers(name)
 

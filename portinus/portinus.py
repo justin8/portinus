@@ -14,11 +14,17 @@ log = logging.getLogger(__name__)
 class Service(object):
 
     def __init__(self, name, source, environment_file):
+        self.check_permissions()
         self.name = name
         self._source = ComposeSource(name, source)
         self._systemd_service = systemd.Service(name)
         self._environment_file = environment_file
         log.debug(f"Initialized portinus.Service for '{name}' with source: '{source}', and environment file: '{environment_file}'")
+
+    def check_permissions(self):
+        if os.geteuid() != 0:
+            log.error("You must be root to run this command!")
+            raise PermissionError("You must be root to run this command!")
 
     def exists(self):
         return os.path.isdir(portinus.get_instance_dir(self.name))

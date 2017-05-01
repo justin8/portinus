@@ -2,6 +2,7 @@
 
 import click
 import logging
+import sys
 
 import portinus
 
@@ -22,7 +23,10 @@ def task(verbose):
 @task.command()
 @click.option('--name', required=True, help="The name of the service to remove")
 def check(name):
-    portinus.monitor.checker.run(name)
+    try:
+        portinus.monitor.checker.run(name)
+    except PermissionError:
+        sys.exit(1)
 
 
 if __name__ == "__main__":
