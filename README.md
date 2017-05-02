@@ -7,6 +7,12 @@ Docker Application Bundles deployed via swarm are great, but in order to support
 ## Usage
 *NOTE*: For all possible options, please use `portinus --help` and `portinus <command> --help` for more information.
 
+### Requirements:
+* docker
+* docker-compose
+* systemd
+* python3
+
 ### To create a service:
 ```
 sudo portinus create --name foo --source /home/justin/foo --env /home/justin/environment-file
