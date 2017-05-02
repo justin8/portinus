@@ -12,8 +12,8 @@ class Service(object):
 
     def __init__(self, name):
         self.name = name
-        self._systemd_service = systemd.Service(name + "-monitor")
-        self._systemd_timer = systemd.Service(name + "-monitor", type="timer")
+        self._systemd_service = systemd.Unit(name + "-monitor")
+        self._systemd_timer = systemd.Unit(name + "-monitor", type="timer")
         pass
 
     def _generate_service_file(self):

@@ -11,8 +11,8 @@ class Timer(object):
     def __init__(self, name, restart_schedule):
         self.name = name
         self.restart_schedule = restart_schedule
-        self._systemd_service = systemd.Service(name + "-restart")
-        self._systemd_timer = systemd.Service(name + "-restart", type="timer")
+        self._systemd_service = systemd.Unit(name + "-restart")
+        self._systemd_timer = systemd.Unit(name + "-restart", type="timer")
         log.debug(f"Initialized restart.Timer for '{name}' with restart_schedule: '{restart_schedule}'")
 
     def __bool__(self):
@@ -20,7 +20,7 @@ class Timer(object):
 
     def _generate_service_file(self):
         template_file = portinus.get_template("restart.service")
-        instance_service = systemd.Service(self.name)
+        instance_service = systemd.Unit(self.name)
 
         return template_file.render(
                 name=self.name,

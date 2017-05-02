@@ -5,7 +5,7 @@ import subprocess
 log = logging.getLogger(__name__)
 
 
-class Service(object):
+class Unit(object):
 
     def __init__(self, name, type="service", content=None):
         self.name = name
@@ -18,7 +18,7 @@ class Service(object):
         except FileNotFoundError as e:
             log.error("Unable to find systemctl!")
             raise(e)
-        log.debug(f"Initialized systemd.Service for '{name}' with type '{type}'")
+        log.debug(f"Initialized systemd.Unit for '{name}' with type '{type}'")
 
     def _systemctl(self, args):
         try:

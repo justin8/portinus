@@ -18,7 +18,7 @@ def check_permissions():
 def run(name):
     check_permissions()
 
-    systemd_service = portinus.systemd.Service(name)
+    systemd_service = portinus.systemd.Unit(name)
     monitored_compose_containers = get_monitored_compose_containers(name)
 
     for container in monitored_compose_containers:
