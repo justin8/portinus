@@ -43,7 +43,10 @@ class Service(object):
 
     def ensure(self):
         log.info(f"Creating/updating {self.name} portinus instance")
-        self._systemd_service.stop()
+        try:
+            self._systemd_service.stop()
+        except subprocess.CalledProcesError:
+            pass
         self._source.ensure()
         self._systemd_service.ensure(content=self._generate_service_file())
 
