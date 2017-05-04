@@ -20,13 +20,6 @@ class Unit(object):
             raise(e)
         log.debug("Initialized systemd.Unit for '{name}' with type '{type}'".format(name=name, type=type))
 
-    def _systemctl(self, args):
-        try:
-            output = subprocess.check_output(["systemctl"] + args)
-        except subprocess.CalledProcessError as e:
-            log.error("Failed to run systemctl with parameters {args}".format(args=args))
-            raise(e)
-
     def set_content(self, content):
         self._content = content
 
@@ -57,6 +50,13 @@ class Unit(object):
             log.debug("No service file found")
         self.reload()
 
+    def _systemctl(self, args, stderr=None):
+        try:
+            subprocess.check_output(["systemctl"] + args, stderr=stderr)
+        except subprocess.CalledProcessError as e:
+            log.error("Failed to run systemctl with parameters {args}".format(args=args))
+            raise(e)
+
     def reload(self):
         log.info("Reloading daemon files")
         self._systemctl(["daemon-reload"])
@@ -67,7 +67,7 @@ class Unit(object):
 
     def stop(self):
         log.info("Stopping {service_name}".format(service_name=self.service_name))
-        self._systemctl(["stop", self.service_name])
+        self._systemctl(["stop", self.service_name], stderr=subprocess.DEVNULL)
 
     def enable(self):
         log.info("Enabling {service_name}".format(service_name=self.service_name))
@@ -75,4 +75,4 @@ class Unit(object):
 
     def disable(self):
         log.info("Disabling {service_name}".format(service_name=self.service_name))
-        self._systemctl(["disable", self.service_name])
+        self._systemctl(["disable", self.service_name], stderr=subprocess.DEVNULL)
