@@ -89,7 +89,7 @@ class ComposeSource(object):
         log.debug("Successfully copied source files")
 
     def remove(self):
-        log.info("Removing source files for '{name}' from '{path}'".(name=self.name, path=self.path))
+        log.info("Removing source files for '{name}' from '{path}'".format(name=self.name, path=self.path))
         try:
             shutil.rmtree(self.path)
             log.debug("Successfully removed source files")

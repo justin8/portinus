@@ -45,6 +45,6 @@ class Timer(object):
             self.remove()
 
     def remove(self):
-        log.info("Removing {name} restart timer".format(name=self.name))
+        log.info("Removing {name} restart timer. Errors from systemctl may occur".format(name=self.name))
         self._systemd_timer.remove()
         self._systemd_service.remove()

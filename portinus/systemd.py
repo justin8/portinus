@@ -49,7 +49,7 @@ class Unit(object):
         except subprocess.CalledProcessError:
             pass
 
-        log.info("Removing service file for {name} from {service_file_path}".format(name=self.name,service_file_path=self.service_file_path))
+        log.info("Removing service file for {name} from {service_file_path}".format(name=self.name, service_file_path=self.service_file_path))
         try:
             os.remove(self.service_file_path)
             log.debug("Successfully removed service file")
@@ -62,7 +62,7 @@ class Unit(object):
         self._systemctl(["daemon-reload"])
 
     def restart(self):
-        log.info("Restarting {service_name}".format(service_name=service_name))
+        log.info("Restarting {service_name}".format(service_name=self.service_name))
         self._systemctl(["restart", self.service_name])
 
     def stop(self):
