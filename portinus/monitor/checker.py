@@ -25,7 +25,7 @@ def run(name):
         log.debug(f"Checking container {container.id}, name: '{container.attrs['Name']}'")
         if not check_container_health(container):
             log.info(f"Container {container.id}, name: '{container.attrs['Name']}'. Restarting stack for {name}")
-            print("Container '{container.attrs['Name']} found unhealthy. Restarting the {name} stack..."
+            print("Container '{container.attrs['Name']} found unhealthy. Restarting the {name} stack...")
             systemd_service.restart()
             return False
     print("No unhealthy containers found")
