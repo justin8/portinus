@@ -24,10 +24,11 @@ def run(name):
     for container in monitored_compose_containers:
         log.debug(f"Checking container {container.id}, name: '{container.attrs['Name']}'")
         if not check_container_health(container):
-            log.warning(f"Container {container.id}, name: '{container.attrs['Name']}'. Restarting stack for {name}")
+            log.info(f"Container {container.id}, name: '{container.attrs['Name']}'. Restarting stack for {name}")
+            print("Container '{container.attrs['Name']} found unhealthy. Restarting the {name} stack..."
             systemd_service.restart()
             return False
-    log.info("No unhealthy containers found")
+    print("No unhealthy containers found")
 
 
 def check_container_health(container):
