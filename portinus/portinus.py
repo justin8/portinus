@@ -19,7 +19,7 @@ class Service(object):
         self._source = ComposeSource(name, source)
         self._systemd_service = systemd.Unit(name)
         self._environment_file = environment_file
-        log.debug(f"Initialized portinus.Service for '{name}' with source: '{source}', and environment file: '{environment_file}'")
+        log.debug("Initialized portinus.Service for '{name}' with source: '{source}', and environment file: '{environment_file}'".format(name=name, source=source, environment_file=environment_file))
 
     def check_permissions(self):
         if os.geteuid() != 0:
@@ -30,8 +30,8 @@ class Service(object):
         return os.path.isdir(portinus.get_instance_dir(self.name))
 
     def _generate_service_file(self):
-        start_command = f"{self._source.service_script} up"
-        stop_command = f"{self._source.service_script} down"
+        start_command = "{service_script} up".format(service_script=self._source.service_script)
+        stop_command = "{service_script} down".format(service_script=self._source.service_script)
 
         template = portinus.get_template("instance.service")
         return template.render(
@@ -42,7 +42,7 @@ class Service(object):
             )
 
     def ensure(self):
-        log.info(f"Creating/updating {self.name} portinus instance")
+        log.info("Creating/updating {name} portinus instance".format(name=self.name))
         try:
             self._systemd_service.stop()
         except subprocess.CalledProcessError:
@@ -51,7 +51,7 @@ class Service(object):
         self._systemd_service.ensure(content=self._generate_service_file())
 
     def remove(self):
-        log.info(f"Removing {self.name} portinus instance")
+        log.info("Removing {name} portinus instance".format(name=self.name))
         self._systemd_service.remove()
         self._source.remove()
 
@@ -69,9 +69,9 @@ class ComposeSource(object):
                 with open(os.path.join(source, "docker-compose.yml")):
                     pass
             except Exception as e:
-                log.error(f"Unable to access the specified source docker compose file in (#{source})")
+                log.error("Unable to access the specified source docker compose file in ({source})".format(source=source))
                 raise(e)
-        log.debug(f"Initialized ComposeSource for '{name}' from source: '{source}'")
+        log.debug("Initialized ComposeSource for '{name}' from source: '{source}'".format(name=name, source=source))
 
     def _ensure_service_script(self):
         service_script_template = os.path.join(portinus.template_dir, "service-script")
@@ -89,7 +89,7 @@ class ComposeSource(object):
         log.debug("Successfully copied source files")
 
     def remove(self):
-        log.info(f"Removing source files for '{self.name}' from '{self.path}'")
+        log.info("Removing source files for '{name}' from '{path}'".(name=self.name, path=self.path))
         try:
             shutil.rmtree(self.path)
             log.debug("Successfully removed source files")
@@ -103,14 +103,14 @@ class EnvironmentFile(object):
         self.name = name
         self._source_environment_file = source_environment_file
         self.path = portinus.get_instance_dir(self.name) + ".environment"
-        log.debug(f"Initialized EnvironmentFile for '{name}' from source: '{source_environment_file}'")
+        log.debug("Initialized EnvironmentFile for '{name}' from source: '{source_environment_file}'".format(name=name, source_environment_file=source_environment_file))
 
         if source_environment_file:
             try:
                 with open(source_environment_file):
                     pass
             except FileNotFoundError as e:
-                log.error(f"Unable to access the specified environment file (#{source_environment_file})")
+                log.error("Unable to access the specified environment file ({source_environment_file})".format(source_environment_file=source_environment_file))
                 raise(e)
 
     def __bool__(self):
@@ -118,13 +118,13 @@ class EnvironmentFile(object):
 
     def ensure(self):
         if self:
-            log.info(f"Creating/updating environment file for '{self.name}' at '{self.path}'")
+            log.info("Creating/updating environment file for '{name}' at '{path}'".format(name=self.name, path=self.path))
             shutil.copy(self._source_environment_file, self.path)
         else:
             self.remove()
 
     def remove(self):
-        log.info(f"Removing environment file for {self.name}")
+        log.info("Removing environment file for {name}".format(name=self.name))
         try:
             os.remove(self.path)
             log.debug("Sucessfully removed environment file")

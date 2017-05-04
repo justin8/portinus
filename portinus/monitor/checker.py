@@ -22,10 +22,10 @@ def run(name):
     monitored_compose_containers = get_monitored_compose_containers(name)
 
     for container in monitored_compose_containers:
-        log.debug(f"Checking container {container.id}, name: '{container.attrs['Name']}'")
+        log.debug("Checking container {container_id}, name: '{name}'".format(container_id=container.id, name=container.attrs['Name']))
         if not check_container_health(container):
-            log.info(f"Container {container.id}, name: '{container.attrs['Name']}'. Restarting stack for {name}")
-            print("Container '{container.attrs['Name']} found unhealthy. Restarting the {name} stack...")
+            log.info("Container {container_id}, name: '{container_name}'. Restarting stack for {name}".format(container_id=container.id, container_name=container.attrs['Name'], stack_name=name))
+            print("Container '{container_name} found unhealthy. Restarting the {name} stack...".format(container_name=container.attrs['Name'], name=name))
             systemd_service.restart()
             return False
     print("No unhealthy containers found")
@@ -45,7 +45,7 @@ def get_monitored_compose_containers(name):
         valid_container = next((x for x in monitored_containers if x.id == container_id), None)
         if valid_container: monitored_compose_containers.append(valid_container)
 
-    log.debug(f"Found {len(monitored_compose_containers)} monitored containers from docker-compose")
+    log.debug("Found {count} monitored containers from docker-compose".format(count=len(monitored_compose_containers)))
     return monitored_compose_containers
 
 
@@ -58,7 +58,7 @@ def get_compose_container_ids(name):
 
     filtered_container_list = list((x for x in container_list if x))
 
-    log.debug(f"Found {len(filtered_container_list)} total containers from docker-compose")
+    log.debug("Found {count} total containers from docker-compose".format(count=len(filtered_container_list)))
     return filtered_container_list
 
 
@@ -73,5 +73,5 @@ def get_monitored_containers():
         if 'Health' in container.attrs['State']:
             monitored_containers.append(container)
 
-    log.debug(f"Found {len(monitored_containers)} monitored containers from docker")
+    log.debug("Found {count} monitored containers from docker".format(count=len(monitored_containers)))
     return monitored_containers

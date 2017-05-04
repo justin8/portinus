@@ -13,7 +13,7 @@ class Timer(object):
         self.restart_schedule = restart_schedule
         self._systemd_service = systemd.Unit(name + "-restart")
         self._systemd_timer = systemd.Unit(name + "-restart", type="timer")
-        log.debug(f"Initialized restart.Timer for '{name}' with restart_schedule: '{restart_schedule}'")
+        log.debug("Initialized restart.Timer for '{name}' with restart_schedule: '{restart_schedule}'".format(name=name, restart_schedule=restart_schedule))
 
     def __bool__(self):
         return bool(self.restart_schedule)
@@ -37,14 +37,14 @@ class Timer(object):
 
     def ensure(self):
         if self:
-            log.info(f"Creating/updating {self.name} restart timer")
+            log.info("Creating/updating {name} restart timer".format(name=self.name))
             self._systemd_service.ensure(content=self._generate_service_file(), restart=False, enable=False)
             self._systemd_timer.ensure(content=self._generate_timer_file())
         else:
-            log.info(f"No restart schedule specified for {self.name}. Removing any existing restart timers")
+            log.info("No restart schedule specified for {name}. Removing any existing restart timers".format(name=self.name))
             self.remove()
 
     def remove(self):
-        log.info(f"Removing {self.name} restart timer")
+        log.info("Removing {name} restart timer".format(name=self.name))
         self._systemd_timer.remove()
         self._systemd_service.remove()

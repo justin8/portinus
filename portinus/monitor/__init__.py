@@ -31,11 +31,11 @@ class Service(object):
                 )
 
     def ensure(self):
-        log.info(f"Creating/updating {self.name} monitor timer")
+        log.info("Creating/updating {name} monitor timer".format(name=self.name))
         self._systemd_service.ensure(content=self._generate_service_file(), restart=False, enable=False)
         self._systemd_timer.ensure(content=self._generate_timer_file())
 
     def remove(self):
-        log.info(f"Removing {self.name} monitor timer")
+        log.info("Removing {name} monitor timer".format(name=self.name))
         self._systemd_timer.remove()
         self._systemd_service.remove()
