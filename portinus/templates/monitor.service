@@ -5,3 +5,4 @@ After=network.target docker.service
 [Service]
 Type=oneshot
 ExecStart=/usr/bin/portinus-monitor check --name {{ name }}
+
