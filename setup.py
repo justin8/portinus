@@ -14,6 +14,7 @@ setup(
     install_requires=[
         "click",
         "docker",
+        "jinja2"
     ],
     tests_require=["nose",
         "coverage",
