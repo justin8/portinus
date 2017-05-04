@@ -53,7 +53,7 @@ def get_compose_container_ids(name):
     compose_source = portinus.portinus.ComposeSource(name, None)
     service_script = compose_source.service_script
 
-    compose_output = subprocess.check_output([service_script, "ps", "-q"]).decode("utf-8")
+    compose_output = subprocess.check_output([service_script, "ps", "-q"], stderr=subprocess.DEVNULL).decode("utf-8")
     container_list = compose_output.split("\n")
 
     filtered_container_list = list((x for x in container_list if x))
