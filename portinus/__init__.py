@@ -47,4 +47,4 @@ class Application(object):
         self._service.remove()
         self._environment_file.remove()
         self._restart_timer.remove()
-        #self._monitor_service.remove()
+        self._monitor_service.remove()
