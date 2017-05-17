@@ -3,7 +3,7 @@ from setuptools import setup, find_packages
 
 setup(
     name="portinus",
-    version="0.9.10",
+    version="0.9.11",
     author="Justin Dray",
     author_email="justin@dray.be",
     url="https://github.com/justin8/portinus",
