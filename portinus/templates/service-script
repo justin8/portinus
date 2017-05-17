@@ -2,4 +2,10 @@
 set -e
 cd "$(dirname "$(readlink -f "$0")")"
 
+environment_file="../$(basename "$PWD").environment"
+if [[ -e $environment_file ]]; then
+	set -a
+	source "$environment_file"
+fi
+
 docker-compose "$@"

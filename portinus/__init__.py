@@ -30,7 +30,7 @@ class Application(object):
     def __init__(self, name, source=None, environment_file=None, restart_schedule=None):
         self.name = name
         self._environment_file = portinus.EnvironmentFile(name, environment_file)
-        self._service = portinus.Service(name, source, self._environment_file)
+        self._service = portinus.Service(name, source)
         self._restart_timer = restart.Timer(name, restart_schedule=restart_schedule)
         self._monitor_service = monitor.Service(name)
 

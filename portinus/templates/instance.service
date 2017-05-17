@@ -4,9 +4,6 @@ After=network.target docker.service
 
 [Service]
 Type=simple
-{% if environment_file -%}
-EnvironmentFile={{ environment_file.path }}
-{% endif -%}
 ExecStart={{ start_command }}
 ExecStop={{ stop_command }}
 

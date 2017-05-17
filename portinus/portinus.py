@@ -13,13 +13,12 @@ log = logging.getLogger(__name__)
 
 class Service(object):
 
-    def __init__(self, name, source, environment_file):
+    def __init__(self, name, source):
         self.check_permissions()
         self.name = name
         self._source = ComposeSource(name, source)
         self._systemd_service = systemd.Unit(name)
-        self._environment_file = environment_file
-        log.debug("Initialized portinus.Service for '{name}' with source: '{source}', and environment file: '{environment_file}'".format(name=name, source=source, environment_file=environment_file))
+        log.debug("Initialized portinus.Service for '{name}' with source: '{source}'".format(name=name, source=source))
 
     def check_permissions(self):
         if os.geteuid() != 0:
@@ -36,7 +35,6 @@ class Service(object):
         template = portinus.get_template("instance.service")
         return template.render(
             name=self.name,
-            environment_file=self._environment_file,
             start_command=start_command,
             stop_command=stop_command,
             )
