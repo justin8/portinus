@@ -37,8 +37,9 @@ class Unit(object):
 
     def remove(self):
         try:
-            self.stop()
-            self.disable()
+            if os.path.exists(self.service_file_path):
+                self.stop()
+                self.disable()
         except subprocess.CalledProcessError:
             pass
 
