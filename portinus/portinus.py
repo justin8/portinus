@@ -13,7 +13,7 @@ log = logging.getLogger(__name__)
 
 class Service(object):
 
-    def __init__(self, name, source):
+    def __init__(self, name, source=None):
         self.check_permissions()
         self.name = name
         self._source = ComposeSource(name, source)
@@ -53,10 +53,14 @@ class Service(object):
         self._systemd_service.remove()
         self._source.remove()
 
+    def compose(self, command):
+        log.info("Running compose for {name} with command: '{command}'".format(name=self.name, command=command))
+        subprocess.call([self._source.service_script] + list(command))
+
 
 class ComposeSource(object):
 
-    def __init__(self, name, source):
+    def __init__(self, name, source=None):
         self.name = name
         self._source = source
         self.path = portinus.get_instance_dir(name)

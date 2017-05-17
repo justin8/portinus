@@ -43,5 +43,16 @@ def ensure(name, source, env, restart):
     service.ensure()
 
 
+@task.command()
+@click.argument('name', required=True)
+@click.argument('args', required=True, nargs=-1)
+def compose(name, args):
+    try:
+        service = portinus.portinus.Service(name)
+    except PermissionError:
+        sys.exit(1)
+    service.compose(args)
+
+
 if __name__ == "__main__":
     task()
