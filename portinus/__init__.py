@@ -34,10 +34,17 @@ class Application(object):
         self._restart_timer = restart.Timer(name, restart_schedule=restart_schedule)
         self._monitor_service = monitor.Service(name)
 
+    def create_service_dir(self):
+        try:
+            os.mkdir(service_dir)
+        except FileExistsError:
+            pass
+
     def exists(self):
         return self._service.exists()
 
     def ensure(self):
+        self.create_service_dir()
         self._environment_file.ensure()
         self._service.ensure()
         self._restart_timer.ensure()
