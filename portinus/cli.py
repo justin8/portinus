@@ -45,7 +45,7 @@ def ensure(name, source, env, restart):
 
 @task.command()
 @click.argument('name', required=True)
-def restart(name)
+def restart(name):
     service = portinus.portinus.Service(name)
     service.restart()
 
