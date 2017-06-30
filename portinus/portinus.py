@@ -14,6 +14,8 @@ log = logging.getLogger(__name__)
 class Service(object):
 
     def __init__(self, name, source=None):
+        if not name:
+            raise ValueError("Invalid value for 'name'")
         self.check_permissions()
         self.name = name
         self._source = ComposeSource(name, source)
@@ -55,6 +57,8 @@ class Service(object):
 
     def compose(self, command):
         log.info("Running compose for {name} with command: '{command}'".format(name=self.name, command=command))
+        if not self.exists():
+            raise ValueError("The specified service does not exist")
         subprocess.call([self._source.service_script] + list(command))
 
 

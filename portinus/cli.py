@@ -49,7 +49,8 @@ def ensure(name, source, env, restart):
 def compose(name, args):
     try:
         service = portinus.portinus.Service(name)
-    except PermissionError:
+    except (PermissionError, ValueError) as e:
+        print(e)
         sys.exit(1)
     service.compose(args)
 
