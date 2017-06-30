@@ -55,6 +55,10 @@ class Service(object):
         self._systemd_service.remove()
         self._source.remove()
 
+    def restart(self):
+        log.info("Restarting {name}".format(name=self.name))
+        self._systemd_service.restart()
+
     def compose(self, command):
         log.info("Running compose for {name} with command: '{command}'".format(name=self.name, command=command))
         if not self.exists():
