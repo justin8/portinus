@@ -59,6 +59,10 @@ class Service(object):
         log.info("Restarting {name}".format(name=self.name))
         self._systemd_service.restart()
 
+    def stop(self):
+        log.info("Stopping {name}".format(name=self.name))
+        self._systemd_service.stop()
+
     def compose(self, command):
         log.info("Running compose for {name} with command: '{command}'".format(name=self.name, command=command))
         if not self.exists():

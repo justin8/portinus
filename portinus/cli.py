@@ -49,6 +49,14 @@ def restart(name):
     service = portinus.portinus.Service(name)
     service.restart()
 
+
+@task.command()
+@click.argument('name', required=True)
+def stop(name):
+    service = portinus.portinus.Service(name)
+    service.stop()
+
+
 @task.command()
 @click.argument('name', required=True)
 @click.argument('args', required=True, nargs=-1)
