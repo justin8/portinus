@@ -16,17 +16,11 @@ class Service(object):
     def __init__(self, name, source=None):
         if not name:
             raise ValueError("Invalid value for 'name'")
-        self.check_permissions()
         self.name = name
         self.service_name = "{}-{}".format("portinus", name)
         self._source = ComposeSource(name, source)
         self._systemd_service = Unit(self.service_name)
         log.debug("Initialized portinus.Service for '{name}' with source: '{source}'".format(name=name, source=source))
-
-    def check_permissions(self):
-        if os.geteuid() != 0:
-            log.error("You must be root to run this command!")
-            raise PermissionError("You must be root to run this command!")
 
     def exists(self):
         return os.path.isdir(portinus.get_instance_dir(self.name))
