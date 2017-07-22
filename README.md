@@ -4,6 +4,11 @@ Portinus is a tool that creates a systemd service out of a docker-compose.yml fi
 ## Why Portinus? Why not use docker application bundles/swarm/deploy?
 Docker Application Bundles deployed via swarm are great, but in order to support horizontal scaling for many of the features in docker, you lose much of the composability and many features, such as network_modes and some other more complex interdependencies.
 
+
+## Features
+* Automatic timer-based stack restart
+* Automatic health-check-based stack restart (just define a health check in your compose file and it works like magic!)
+
 ## Usage
 *NOTE*: For all possible options, please use `portinus --help` and `portinus <command> --help` for more information.
 
@@ -15,7 +20,7 @@ Docker Application Bundles deployed via swarm are great, but in order to support
 
 ### To create a service:
 ```
-sudo portinus create --name foo --source /home/justin/foo --env /home/justin/environment-file
+sudo portinus create --name foo --source /home/justin/foo --env /home/justin/environment-file --restart daily
 ```
 
 * Where `/home/justin/foo` is a directory containing a `docker-compose.yml` file.
@@ -23,6 +28,7 @@ sudo portinus create --name foo --source /home/justin/foo --env /home/justin/env
 * This will create a service named `portinus-foo` that will be enabled on boot and started as soon as it is created. 
 * The files it runs will only be a snapshot of the source folder at the time portinus is executed.
 * Any files generated using paths such as `./` in the `docker-compose.yml` file will be removed during installation. All 'updates' are clean installs.
+* `--restart` supports any systemd `OnCalendar` format schedules such as 'daily', 'weekly', etc
 
 ### To disable a service on boot
 Just treat it like any other systemd service:
