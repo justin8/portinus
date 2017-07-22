@@ -58,6 +58,11 @@ def stop(name):
 
 
 @task.command()
+def list():
+    portinus.list()
+
+
+@task.command()
 @click.argument('name', required=True)
 @click.argument('args', required=True, nargs=-1)
 def compose(name, args):

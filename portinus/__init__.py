@@ -1,6 +1,7 @@
 import logging
 import os
 
+from pathlib import Path
 from jinja2 import Template
 
 from .cli import task
@@ -9,6 +10,12 @@ from . import portinus, restart, systemd, monitor
 _script_dir = os.path.dirname(os.path.realpath(__file__))
 template_dir = os.path.join(_script_dir, 'templates')
 service_dir = '/usr/local/portinus-services'
+
+
+def list():
+    for i in Path(service_dir).iterdir():
+        if i.is_dir():
+            print(i.name)
 
 
 def get_instance_dir(name):
