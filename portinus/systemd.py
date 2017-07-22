@@ -14,7 +14,7 @@ class Unit(object):
         self._content = content
 
         try:
-            subprocess.check_output(["systemctl", "--help"])
+            self._systemctl(['--help'])
         except FileNotFoundError as e:
             log.error("Unable to find systemctl!")
             raise(e)
