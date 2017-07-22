@@ -6,7 +6,7 @@ import logging
 from jinja2 import Template
 
 import portinus
-from . import systemd
+from systemd_unit import Unit
 
 log = logging.getLogger(__name__)
 
@@ -18,8 +18,9 @@ class Service(object):
             raise ValueError("Invalid value for 'name'")
         self.check_permissions()
         self.name = name
+        self.service_name = "{}-{}".format("portinus", name)
         self._source = ComposeSource(name, source)
-        self._systemd_service = systemd.Unit(name)
+        self._systemd_service = Unit(self.service_name)
         log.debug("Initialized portinus.Service for '{name}' with source: '{source}'".format(name=name, source=source))
 
     def check_permissions(self):

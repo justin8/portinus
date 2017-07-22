@@ -2,7 +2,7 @@ import logging
 
 import portinus
 
-from portinus import systemd
+from systemd_unit import Unit
 from . import checker
 
 log = logging.getLogger(__name__)
@@ -12,8 +12,9 @@ class Service(object):
 
     def __init__(self, name):
         self.name = name
-        self._systemd_service = systemd.Unit(name + "-monitor")
-        self._systemd_timer = systemd.Unit(name + "-monitor", type="timer")
+        systemd_service_name = portinus.portinus.Service(name).service_name
+        self._systemd_service = Unit(systemd_service_name + "-monitor")
+        self._systemd_timer = Unit(systemd_service_name + "-monitor", type="timer")
         pass
 
     def _generate_service_file(self):

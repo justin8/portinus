@@ -3,7 +3,7 @@ from setuptools import setup, find_packages
 
 setup(
     name="portinus",
-    version="0.9.17",
+    version="0.9.18",
     author="Justin Dray",
     author_email="justin@dray.be",
     url="https://github.com/justin8/portinus",
@@ -14,7 +14,8 @@ setup(
     install_requires=[
         "click",
         "docker",
-        "jinja2"
+        "jinja2",
+        "systemd_unit"
     ],
     tests_require=["nose",
         "coverage",

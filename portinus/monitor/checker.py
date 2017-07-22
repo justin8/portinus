@@ -5,6 +5,7 @@ import subprocess
 import sys
 
 import portinus
+from systemd_unit import Unit
 
 log = logging.getLogger(__name__)
 
@@ -18,7 +19,8 @@ def check_permissions():
 def run(name):
     check_permissions()
 
-    systemd_service = portinus.systemd.Unit(name)
+    systemd_service_name = portinus.portinus.Service(name).service_name
+    systemd_service = Unit(systemd_service_name)
     monitored_compose_containers = get_monitored_compose_containers(name)
 
     for container in monitored_compose_containers:
@@ -50,7 +52,7 @@ def get_monitored_compose_containers(name):
 
 
 def get_compose_container_ids(name):
-    compose_source = portinus.portinus.ComposeSource(name, None)
+    compose_source = portinus.portinus.ComposeSource(name)
     service_script = compose_source.service_script
 
     compose_output = subprocess.check_output([service_script, "ps", "-q"], stderr=subprocess.DEVNULL).decode("utf-8")

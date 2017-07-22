@@ -5,7 +5,7 @@ from pathlib import Path
 from jinja2 import Template
 
 from .cli import task
-from . import portinus, restart, systemd, monitor
+from . import portinus, restart, monitor
 
 _script_dir = os.path.dirname(os.path.realpath(__file__))
 template_dir = os.path.join(_script_dir, 'templates')
