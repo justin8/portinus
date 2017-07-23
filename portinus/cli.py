@@ -46,14 +46,14 @@ def ensure(name, source, env, restart):
 @task.command()
 @click.argument('name', required=True)
 def restart(name):
-    service = portinus.portinus.Service(name)
+    service = portinus.Service(name)
     service.restart()
 
 
 @task.command()
 @click.argument('name', required=True)
 def stop(name):
-    service = portinus.portinus.Service(name)
+    service = portinus.Service(name)
     service.stop()
 
 
@@ -67,7 +67,7 @@ def list():
 @click.argument('args', required=True, nargs=-1)
 def compose(name, args):
     try:
-        service = portinus.portinus.Service(name)
+        service = portinus.Service(name)
         service.compose(args)
     except (PermissionError, ValueError) as e:
         print(e)

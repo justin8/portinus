@@ -11,7 +11,7 @@ class Timer(object):
     def __init__(self, name, restart_schedule):
         self.name = name
         self.restart_schedule = restart_schedule
-        systemd_service_name = portinus.portinus.Service(name).service_name
+        systemd_service_name = portinus.Service(name).service_name
         self._systemd_service = Unit(systemd_service_name + "-restart")
         self._systemd_timer = Unit(systemd_service_name + "-restart", type="timer")
         log.debug("Initialized restart.Timer for '{name}' with restart_schedule: '{restart_schedule}'".format(name=name, restart_schedule=restart_schedule))
