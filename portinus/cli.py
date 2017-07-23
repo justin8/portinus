@@ -9,9 +9,7 @@ import portinus
 CONTEXT_SETTINGS = dict(help_option_names=['-h', '--help'])
 
 
-@click.group()
-@click.option('-v', '--verbose', count=True, help="Enable more logging. More -v's for more logging")
-def task(verbose):
+def set_log_level(verbose):
     log_level = logging.WARNING
     if verbose == 1:
         log_level = logging.INFO
@@ -20,14 +18,21 @@ def task(verbose):
     logging.basicConfig(level=log_level)
 
 
+@click.group()
+@click.option('-v', '--verbose', count=True, help="Enable more logging. More -v's for more logging")
+def task(verbose):
+    set_log_level(verbose)
+
+
 @task.command()
 @click.argument('name', required=True)
 def remove(name):
+    service = portinus.Application(name)
     try:
-        service = portinus.Application(name)
+        service.remove()
     except PermissionError:
+        click.echo("Failed to remove the application due to a permissions error")
         sys.exit(1)
-    service.remove()
 
 
 @task.command()
@@ -39,6 +44,7 @@ def ensure(name, source, env, restart):
     try:
         service = portinus.Application(name, source=source, environment_file=env, restart_schedule=restart)
     except PermissionError:
+        click.echo("Failed to create the application due to a permissions error")
         sys.exit(1)
     service.ensure()
 
@@ -69,7 +75,7 @@ def compose(name, args):
     try:
         service = portinus.Service(name)
         service.compose(args)
-    except (PermissionError, ValueError) as e:
+    except (ValueError) as e:
         print(e)
         sys.exit(1)
 
