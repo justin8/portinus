@@ -9,6 +9,9 @@ Docker Application Bundles deployed via swarm are great, but in order to support
 * Automatic timer-based stack restart
 * Automatic health-check-based stack restart (just define a health check in your compose file and it works like magic!)
 
+## Installation
+`pip3 install portinus`
+
 ## Usage
 *NOTE*: For all possible options, please use `portinus --help` and `portinus <command> --help` for more information.
 
