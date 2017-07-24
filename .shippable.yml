@@ -6,6 +6,7 @@ python:
 
 build:
     ci:
+        - pip freeze
         - mkdir -p shippable/codecoverage
         - pip install --upgrade -e .
         - coverage run ./setup.py test
