@@ -33,6 +33,14 @@ sudo portinus create --name foo --source /home/justin/foo --env /home/justin/env
 * Any files generated using paths such as `./` in the `docker-compose.yml` file will be removed during installation. All 'updates' are clean installs.
 * `--restart` supports any systemd `OnCalendar` format schedules such as 'daily', 'weekly', etc
 
+### To use docker-compose on a service:
+```
+portinus compose foo ps
+```
+```
+portinus compose foo logs bar
+```
+
 ### To disable a service on boot
 Just treat it like any other systemd service:
 ```
@@ -41,7 +49,14 @@ sudo systemctl disable portinus-foo.service
 
 ### To remove a service
 ```
-sudo portinus remove --name foo
+sudo portinus remove foo
+```
+
+
+### To stop or restart a service
+```
+sudo portinus stop foo
+sudo portinus restart foo
 ```
 
 * Only the name is required to remove a service
