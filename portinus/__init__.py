@@ -1,5 +1,6 @@
 import logging
 import os
+from operator import attrgetter
 
 from pathlib import Path
 from jinja2 import Template
@@ -37,10 +38,42 @@ class Application(object):
 
     def __init__(self, name, source=None, environment_file=None, restart_schedule=None):
         self.name = name
-        self._environment_file = EnvironmentFile(name, environment_file)
-        self._service = Service(name, source)
-        self._restart_timer = restart.Timer(name, restart_schedule=restart_schedule)
-        self._monitor_service = monitor.Service(name)
+        self.environment_file = EnvironmentFile(name, environment_file)
+        self.service = Service(name, source)
+        self.restart_timer = restart.Timer(name, restart_schedule=restart_schedule)
+        self.monitor_service = monitor.Service(name)
+
+    service = property(attrgetter('_service'))
+
+    @service.setter
+    def service(self, value):
+        if value and not isinstance(value, Service):
+            raise TypeError("Must be set to a Service object")
+        self._service = value
+
+    environment_file = property(attrgetter('_environment_file'))
+
+    @environment_file.setter
+    def environment_file(self, value):
+        if value and not isinstance(value, EnvironmentFile):
+            raise TypeError("Must be set to an EnvironmentFile object")
+        self._environment_file = value
+
+    restart_timer = property(attrgetter('_restart_timer'))
+
+    @restart_timer.setter
+    def restart_timer(self, value):
+        if value and not isinstance(value, restart.Timer):
+            raise TypeError("Must be set to a restart.Timer object")
+        self._restart_timer = value
+
+    monitor_service = property(attrgetter('_monitor_service'))
+
+    @monitor_service.setter
+    def monitor_service(self, value):
+        if value and not isinstance(value, monitor.Service):
+            raise TypeError("Must be set to a monitor.Service object")
+        self._monitor_service = value
 
     def _create_service_dir(self):
         try:
@@ -49,17 +82,17 @@ class Application(object):
             pass
 
     def exists(self):
-        return self._service.exists()
+        return self.service.exists()
 
     def ensure(self):
         self._create_service_dir()
-        self._environment_file.ensure()
-        self._service.ensure()
-        self._restart_timer.ensure()
-        self._monitor_service.ensure()
+        self.environment_file.ensure()
+        self.service.ensure()
+        self.restart_timer.ensure()
+        self.monitor_service.ensure()
 
     def remove(self):
-        self._service.remove()
-        self._environment_file.remove()
-        self._restart_timer.remove()
-        self._monitor_service.remove()
+        self.service.remove()
+        self.environment_file.remove()
+        self.restart_timer.remove()
+        self.monitor_service.remove()
