@@ -62,13 +62,13 @@ class testEnvironmentFile(unittest.TestCase):
         env = EnvironmentFile('foo', source_environment_file=self.real_environment_file)
         env.ensure()
         self.assertTrue(env)
-        fake_copy.assert_called()
+        self.assertTrue(fake_copy.called)
 
     @patch.object(EnvironmentFile, 'remove')
     def test_ensure_no_source(self, fake_remove):
         env = EnvironmentFile('foo')
         env.ensure()
-        fake_remove.assert_called()
+        self.assertTrue(fake_remove.called)
 
 class testService(unittest.TestCase):
     
