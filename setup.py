@@ -19,7 +19,7 @@ setup(
     ],
     tests_require=["nose",
         "coverage",
-        "mock",
+        "mock>=2.0.0",
     ],
     test_suite="nose.collector",
     entry_points={
