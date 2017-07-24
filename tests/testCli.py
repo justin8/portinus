@@ -28,8 +28,10 @@ class testCli(unittest.TestCase):
     def test_stop_success(self, fake_application):
         result = self.runner.invoke(cli.stop, ["foo"])
         self.assertFalse(result.exception)
-        self.assertEqual(str(fake_application.mock_calls[0]), "call('foo')")
-        self.assertEqual(str(fake_application.mock_calls[1]), "call().service.stop()")
+        self.assertEqual(str(fake_application.mock_calls[0]),
+                         "call('foo')")
+        self.assertEqual(str(fake_application.mock_calls[1]),
+                         "call().service.stop()")
 
     @patch.object(portinus, "Application")
     def test_stop_no_input(self, fake_application):
@@ -41,8 +43,10 @@ class testCli(unittest.TestCase):
     def test_restart_success(self, fake_application):
         result = self.runner.invoke(cli.restart, ["foo"])
         self.assertFalse(result.exception)
-        self.assertEqual(str(fake_application.mock_calls[0]), "call('foo')")
-        self.assertEqual(str(fake_application.mock_calls[1]), "call().service.restart()")
+        self.assertEqual(str(fake_application.mock_calls[0]),
+                         "call('foo')")
+        self.assertEqual(str(fake_application.mock_calls[1]),
+                         "call().service.restart()")
 
     @patch.object(portinus, "Application")
     def test_restart_no_input(self, fake_application):
@@ -84,15 +88,20 @@ class testCli(unittest.TestCase):
     def test_compose_2_args(self, fake_application):
         result = self.runner.invoke(cli.compose, ["foo", "ps"])
         self.assertFalse(result.exception)
-        self.assertEqual(str(fake_application.mock_calls[0]), "call('foo')")
-        self.assertEqual(str(fake_application.mock_calls[1]), "call().service.compose(('ps',))")
+        self.assertEqual(str(fake_application.mock_calls[0]),
+                         "call('foo')")
+        self.assertEqual(str(fake_application.mock_calls[1]),
+                         "call().service.compose(('ps',))")
 
     @patch.object(portinus, "Application")
     def test_compose_5_args(self, fake_application):
         result = self.runner.invoke(cli.compose, ["foo", "logs", "bar", "baz", "qwe"])
         self.assertFalse(result.exception)
         self.assertEqual(str(fake_application.mock_calls[0]), "call('foo')")
-        self.assertEqual(str(fake_application.mock_calls[1]), "call().service.compose(('logs', 'bar', 'baz', 'qwe'))")
+        self.assertEqual(
+            str(fake_application.mock_calls[1]),
+            "call().service.compose(('logs', 'bar', 'baz', 'qwe'))"
+        )
 
     @patch.object(portinus, "Application")
     def test_ensure_no_args(self, fake_application):
@@ -109,7 +118,8 @@ class testCli(unittest.TestCase):
     @patch.object(portinus, "Application")
     def test_ensure_non_existent_dir(self, fake_application):
         non_existent_dir = str(test_data_dir.joinpath('i-dont-exist'))
-        result = self.runner.invoke(cli.ensure, ['--source', non_existent_dir, 'foo'])
+        result = self.runner.invoke(cli.ensure,
+                                    ['--source', non_existent_dir, 'foo'])
         self.assertTrue(result.exception)
 
     @patch.object(portinus, "Application")
