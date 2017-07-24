@@ -117,8 +117,17 @@ class testCli(unittest.TestCase):
         real_app = str(test_data_dir.joinpath('real_app'))
         result = self.runner.invoke(cli.ensure, ['--source', real_app, 'foo'])
         self.assertFalse(result.exception)
-        self.assertEqual(str(fake_application.mock_calls[0]), "call('foo', environment_file=None, restart_schedule=None, source='{}')".format(real_app))
-        self.assertEqual(str(fake_application.mock_calls[1]), "call().ensure()")
+
+        # python 3.4 seems to re-arrange arguments,
+        # so we test for the source and not the order
+        expected_source = "source='{}'".format(real_app)
+        create_call = str(fake_application.mock_calls[0])
+        if not expected_source in create_call:
+            raise AssertionError(
+                "{} not found in {}".format(expected_source, create_call)
+                )
+        self.assertEqual(str(fake_application.mock_calls[1]),
+                             "call().ensure()")
 
     @patch('logging.basicConfig')
     def test_set_log_level(self, fake_logging):
