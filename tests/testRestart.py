@@ -1,6 +1,6 @@
 import unittest
 from unittest import mock
-from unittest.mock import MagicMock, patch, PropertyMock
+from unittest.mock import patch
 
 import systemd_unit
 from jinja2 import Template

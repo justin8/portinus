@@ -7,7 +7,7 @@ from operator import attrgetter
 from jinja2 import Template
 
 import portinus
-from systemd_unit import Unit
+import systemd_unit
 
 log = logging.getLogger(__name__)
 
@@ -20,8 +20,8 @@ class Service(object):
         self.name = name
         self.service_name = "{}-{}".format("portinus", name)
         self._source = ComposeSource(name, source)
-        self._systemd_service = Unit(self.service_name)
-        log.debug("Initialized portinus.Service for '{name}' with source: '{source}'".format(name=name, source=source))
+        self._systemd_service = systemd_unit.Unit(self.service_name)
+        log.debug("Initialized Service for '{name}' with source: '{source}'".format(name=name, source=source))
 
     def exists(self):
         return os.path.isdir(portinus.get_instance_dir(self.name))
