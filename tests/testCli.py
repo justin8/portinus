@@ -28,44 +28,40 @@ class testCli(unittest.TestCase):
     def test_stop_success(self, fake_application):
         result = self.runner.invoke(cli.stop, ["foo"])
         self.assertFalse(result.exception)
-        self.assertEqual(str(fake_application.mock_calls[0]),
-                         "call('foo')")
-        self.assertEqual(str(fake_application.mock_calls[1]),
-                         "call().service.stop()")
+        fake_application.assert_called_with('foo')
+        self.assertTrue(fake_application().service.stop.called)
 
     @patch.object(portinus, "Application")
     def test_stop_no_input(self, fake_application):
         result = self.runner.invoke(cli.stop, [])
         self.assertTrue(result.exception)
-        self.assertEqual(fake_application.mock_calls, [])
+        self.assertFalse(fake_application.called)
 
     @patch.object(portinus, "Application")
     def test_restart_success(self, fake_application):
         result = self.runner.invoke(cli.restart, ["foo"])
         self.assertFalse(result.exception)
-        self.assertEqual(str(fake_application.mock_calls[0]),
-                         "call('foo')")
-        self.assertEqual(str(fake_application.mock_calls[1]),
-                         "call().service.restart()")
+        fake_application.assert_called_with('foo')
+        self.assertTrue(fake_application().service.restart.called)
 
     @patch.object(portinus, "Application")
     def test_restart_no_input(self, fake_application):
         result = self.runner.invoke(cli.restart, [])
         self.assertTrue(result.exception)
-        self.assertEqual(fake_application.mock_calls, [])
+        self.assertFalse(fake_application.called)
 
     @patch.object(portinus, "Application")
     def test_remove_success(self, fake_application):
         result = self.runner.invoke(cli.remove, ["foo"])
         self.assertFalse(result.exception)
-        self.assertEqual(str(fake_application.mock_calls[0]), "call('foo')")
-        self.assertEqual(str(fake_application.mock_calls[1]), "call().remove()")
+        fake_application.assert_called_with('foo')
+        self.assertTrue(fake_application().remove.called)
 
     @patch.object(portinus, "Application")
     def test_remove_no_input(self, fake_application):
         result = self.runner.invoke(cli.remove, [])
         self.assertTrue(result.exception)
-        self.assertEqual(fake_application.mock_calls, [])
+        self.assertFalse(fake_application.called)
 
     @patch.object(portinus, "Application", side_effect=PermissionError)
     def test_remove_permission_error(self, fake_application):
@@ -76,44 +72,38 @@ class testCli(unittest.TestCase):
     def test_compose_no_args(self, fake_application):
         result = self.runner.invoke(cli.compose, [])
         self.assertTrue(result.exception)
-        self.assertEqual(fake_application.mock_calls, [])
+        self.assertFalse(fake_application.called)
 
     @patch.object(portinus, "Application")
     def test_compose_one_arg(self, fake_application):
         result = self.runner.invoke(cli.compose, ["foo"])
         self.assertTrue(result.exception)
-        self.assertEqual(fake_application.mock_calls, [])
+        self.assertFalse(fake_application.called)
 
     @patch.object(portinus, "Application")
     def test_compose_2_args(self, fake_application):
         result = self.runner.invoke(cli.compose, ["foo", "ps"])
         self.assertFalse(result.exception)
-        self.assertEqual(str(fake_application.mock_calls[0]),
-                         "call('foo')")
-        self.assertEqual(str(fake_application.mock_calls[1]),
-                         "call().service.compose(('ps',))")
+        fake_application.assert_called_with('foo')
+        fake_application().service.compose.assert_called_with(('ps',))
 
     @patch.object(portinus, "Application")
     def test_compose_5_args(self, fake_application):
         result = self.runner.invoke(cli.compose, ["foo", "logs", "bar", "baz", "qwe"])
         self.assertFalse(result.exception)
-        self.assertEqual(str(fake_application.mock_calls[0]), "call('foo')")
-        self.assertEqual(
-            str(fake_application.mock_calls[1]),
-            "call().service.compose(('logs', 'bar', 'baz', 'qwe'))"
-        )
+        fake_application.assert_called_with('foo')
+        fake_application().service.compose.assert_called_with(('logs', 'bar', 'baz', 'qwe'))
 
     @patch.object(portinus, "Application")
     def test_ensure_no_args(self, fake_application):
         result = self.runner.invoke(cli.ensure, [])
         self.assertTrue(result.exception)
-        self.assertEqual(fake_application.mock_calls, [])
+        self.assertFalse(fake_application.called)
 
     @patch.object(portinus, "Application")
     def test_ensure_no_source(self, fake_application):
         result = self.runner.invoke(cli.ensure, ["foo"])
         self.assertTrue(result.exception)
-        self.assertEqual(fake_application.mock_calls, [])
 
     @patch.object(portinus, "Application")
     def test_ensure_non_existent_dir(self, fake_application):
@@ -136,8 +126,7 @@ class testCli(unittest.TestCase):
             raise AssertionError(
                 "{} not found in {}".format(expected_source, create_call)
                 )
-        self.assertEqual(str(fake_application.mock_calls[1]),
-                             "call().ensure()")
+        self.assertTrue(fake_application().ensure.called)
 
     @patch('logging.basicConfig')
     def test_set_log_level(self, fake_logging):
