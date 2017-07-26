@@ -5,6 +5,7 @@ from pathlib import Path
 import jinja2
 
 import portinus
+from portinus import Application
 
 test_dir = Path(__file__).absolute().parent
 test_data_dir = Path(test_dir).joinpath("testdata")
@@ -35,10 +36,44 @@ class testApplication(unittest.TestCase):
     def setUp(self):
         pass
 
-    @patch('subprocess.check_output')
     @patch.object(portinus.restart, 'Timer')
     @patch.object(portinus.monitor, 'Service')
-    def test_init(self, fake_monitor_service, fake_restart_timer, fake_check_output):
-        app = portinus.Application('foo')
+    @patch.object(portinus, 'Service')
+    @patch.object(portinus, 'EnvironmentFile')
+    def test_init(self, fake_environment_file, fake_service,
+                  fake_monitor_service, fake_restart_timer):
+        app = Application('foo')
         self.assertTrue(fake_restart_timer.called)
         self.assertTrue(fake_monitor_service.called)
+        self.assertTrue(fake_service.called)
+        self.assertTrue(fake_environment_file.called)
+
+    @patch.object(portinus.restart, 'Timer')
+    @patch.object(portinus.monitor, 'Service')
+    @patch.object(portinus, 'Service')
+    @patch.object(portinus, 'EnvironmentFile')
+    @patch.object(Application, '_create_service_dir')
+    def test_ensure(self, fake__create_service_dir, fake_environment_file,
+                    fake_service, fake_monitor_service, fake_restart_timer):
+        app = Application('foo')
+        app.ensure()
+
+        self.assertTrue(fake__create_service_dir.called)
+        self.assertTrue(fake_environment_file().ensure.called)
+        self.assertTrue(fake_service().ensure.called)
+        self.assertTrue(fake_monitor_service().ensure.called)
+        self.assertTrue(fake_restart_timer().ensure.called)
+
+    @patch.object(portinus.restart, 'Timer')
+    @patch.object(portinus.monitor, 'Service')
+    @patch.object(portinus, 'Service')
+    @patch.object(portinus, 'EnvironmentFile')
+    def test_remove(self, fake_environment_file,
+                    fake_service, fake_monitor_service, fake_restart_timer):
+        app = Application('foo')
+        app.remove()
+
+        self.assertTrue(fake_environment_file().remove.called)
+        self.assertTrue(fake_service().remove.called)
+        self.assertTrue(fake_monitor_service().remove.called)
+        self.assertTrue(fake_restart_timer().remove.called)
