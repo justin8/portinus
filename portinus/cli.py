@@ -27,8 +27,8 @@ def task(verbose):
 @task.command()
 @click.argument('name', required=True)
 def remove(name):
+    application = portinus.Application(name)
     try:
-        application = portinus.Application(name)
         application.remove()
     except PermissionError:
         click.echo("Failed to remove the application due to a permissions error")
@@ -41,12 +41,14 @@ def remove(name):
 @click.option('--env', help="A file containing the list of environment variables to use")
 @click.option('--restart', help="Provide a systemd 'OnCalender' scheduling string to force a restart of the service on the specified interval (e.g. 'weekly' or 'daily')")
 def ensure(name, source, env, restart):
+    application = portinus.Application(name, source=source,
+                                       environment_file=env,
+                                       restart_schedule=restart)
     try:
-        application = portinus.Application(name, source=source, environment_file=env, restart_schedule=restart)
+        application.ensure()
     except PermissionError:
         click.echo("Failed to create the application due to a permissions error")
         sys.exit(1)
-    application.ensure()
 
 
 @task.command()
