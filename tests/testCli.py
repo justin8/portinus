@@ -70,6 +70,13 @@ class testCli(unittest.TestCase):
         self.assertTrue(fake_application().remove.called)
 
     @patch.object(portinus, "Application")
+    def test_remove_no_permissions(self, fake_application):
+        fake_application().remove.side_effect = PermissionError
+        real_app = str(test_data_dir.joinpath('real_app'))
+        result = self.runner.invoke(cli.remove, ['foo'])
+        self.assertIsInstance(result.exception, SystemExit)
+
+    @patch.object(portinus, "Application")
     def test_remove_no_input(self, fake_application):
         result = self.runner.invoke(cli.remove, [])
         self.assertTrue(result.exception)
@@ -123,6 +130,13 @@ class testCli(unittest.TestCase):
         result = self.runner.invoke(cli.ensure,
                                     ['--source', non_existent_dir, 'foo'])
         self.assertTrue(result.exception)
+
+    @patch.object(portinus, "Application")
+    def test_ensure_no_permissions(self, fake_application):
+        fake_application().ensure.side_effect = PermissionError
+        real_app = str(test_data_dir.joinpath('real_app'))
+        result = self.runner.invoke(cli.ensure, ['--source', real_app, 'foo'])
+        self.assertIsInstance(result.exception, SystemExit)
 
     @patch.object(portinus, "Application")
     def test_ensure_success(self, fake_application):
