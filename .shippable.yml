@@ -3,10 +3,10 @@ language: python
 python:
     - "3.4"
     - "3.5"
-    - "3.6"
 
 build:
     ci:
+        - pip freeze
         - mkdir -p shippable/codecoverage
         - pip install --upgrade -e .
         - coverage run ./setup.py test

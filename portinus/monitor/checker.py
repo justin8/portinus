@@ -5,32 +5,23 @@ import subprocess
 import sys
 
 import portinus
-from systemd_unit import Unit
 
 log = logging.getLogger(__name__)
 
 
-def check_permissions():
-    if os.geteuid() != 0:
-        log.error("This script must be run as root!")
-        raise PermissionError("You must be root")
-
-
 def run(name):
-    check_permissions()
-
-    systemd_service_name = portinus.portinus.Service(name).service_name
-    systemd_service = Unit(systemd_service_name)
+    service = portinus.Service(name)
     monitored_compose_containers = get_monitored_compose_containers(name)
 
     for container in monitored_compose_containers:
         log.debug("Checking container {container_id}, name: '{name}'".format(container_id=container.id, name=container.attrs['Name']))
         if not check_container_health(container):
-            log.info("Container {container_id}, name: '{container_name}'. Restarting stack for {name}".format(container_id=container.id, container_name=container.attrs['Name'], stack_name=name))
+            log.info("Container {container_id}, name: '{container_name}'. Restarting stack for {name}".format(container_id=container.id, container_name=container.attrs['Name'], name=name))
             print("Container '{container_name} found unhealthy. Restarting the {name} stack...".format(container_name=container.attrs['Name'], name=name))
-            systemd_service.restart()
+            service.restart()
             return False
     print("No unhealthy containers found")
+    return True
 
 
 def check_container_health(container):
@@ -52,7 +43,7 @@ def get_monitored_compose_containers(name):
 
 
 def get_compose_container_ids(name):
-    compose_source = portinus.portinus.ComposeSource(name)
+    compose_source = portinus.ComposeSource(name)
     service_script = compose_source.service_script
 
     compose_output = subprocess.check_output([service_script, "ps", "-q"], stderr=subprocess.DEVNULL).decode("utf-8")

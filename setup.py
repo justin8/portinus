@@ -3,7 +3,7 @@ from setuptools import setup, find_packages
 
 setup(
     name="portinus",
-    version="0.9.18",
+    version="1.0.0",
     author="Justin Dray",
     author_email="justin@dray.be",
     url="https://github.com/justin8/portinus",
@@ -19,7 +19,7 @@ setup(
     ],
     tests_require=["nose",
         "coverage",
-        "mock",
+        "mock>=2.0.0",
     ],
     test_suite="nose.collector",
     entry_points={
