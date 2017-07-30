@@ -17,6 +17,7 @@ service_dir = '/usr/local/portinus-services'
 
 
 def list():
+    print("Available portinus services:")
     for i in Path(service_dir).iterdir():
         if i.is_dir():
             print(i.name)
