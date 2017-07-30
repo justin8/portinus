@@ -37,7 +37,7 @@ class Service(object):
         log.info("Creating/updating {name} portinus instance".format(name=self.name))
         try:
             self._systemd_service.stop()
-        except subprocess.CalledProcessError:
+        except FileNotFoundError:
             pass
         self._source.ensure()
         self._systemd_service.ensure(content=self._generate_service_file())

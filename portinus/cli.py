@@ -10,10 +10,12 @@ CONTEXT_SETTINGS = dict(help_option_names=['-h', '--help'])
 
 
 def set_log_level(verbose):
-    log_level = logging.WARNING
+    log_level = logging.ERROR
     if verbose == 1:
+        log_level = logging.WARNING
+    if verbose == 2:
         log_level = logging.INFO
-    if verbose >= 2:
+    if verbose >= 3:
         log_level = logging.DEBUG
     logging.basicConfig(level=log_level)
 
@@ -55,14 +57,21 @@ def ensure(name, source, env, restart):
 @click.argument('name', required=True)
 def restart(name):
     application = portinus.Application(name)
-    application.service.restart()
+    try:
+        application.service.restart()
+    except FileNotFoundError:
+        sys.exit(1)
 
 
 @task.command()
 @click.argument('name', required=True)
 def stop(name):
     application = portinus.Application(name)
-    application.service.stop()
+    try:
+        application.service.stop()
+    except FileNotFoundError:
+        click.echo("Unable to find the specified service file")
+        sys.exit(1)
 
 
 @task.command()

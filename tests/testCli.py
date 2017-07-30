@@ -44,6 +44,14 @@ class testCli(unittest.TestCase):
         self.assertTrue(fake_application().service.stop.called)
 
     @patch.object(portinus, "Application")
+    def test_stop_exception(self, fake_application):
+        fake_application().service.stop.side_effect = FileNotFoundError
+        result = self.runner.invoke(cli.stop, ["foo"])
+        fake_application.assert_called_with('foo')
+        self.assertTrue(fake_application().service.stop.called)
+        self.assertTrue(result.exception)
+
+    @patch.object(portinus, "Application")
     def test_stop_no_input(self, fake_application):
         result = self.runner.invoke(cli.stop, [])
         self.assertTrue(result.exception)
@@ -55,6 +63,14 @@ class testCli(unittest.TestCase):
         self.assertFalse(result.exception)
         fake_application.assert_called_with('foo')
         self.assertTrue(fake_application().service.restart.called)
+
+    @patch.object(portinus, "Application")
+    def test_restart_exception(self, fake_application):
+        fake_application().service.restart.side_effect = FileNotFoundError
+        result = self.runner.invoke(cli.restart, ["foo"])
+        fake_application.assert_called_with('foo')
+        self.assertTrue(fake_application().service.restart.called)
+        self.assertTrue(result.exception)
 
     @patch.object(portinus, "Application")
     def test_restart_no_input(self, fake_application):
@@ -157,12 +173,15 @@ class testCli(unittest.TestCase):
     @patch('logging.basicConfig')
     def test_set_log_level(self, fake_logging):
         cli.set_log_level(0)
-        fake_logging.assert_called_with(level=logging.WARNING)
+        fake_logging.assert_called_with(level=logging.ERROR)
 
         cli.set_log_level(1)
-        fake_logging.assert_called_with(level=logging.INFO)
+        fake_logging.assert_called_with(level=logging.WARNING)
 
         cli.set_log_level(2)
+        fake_logging.assert_called_with(level=logging.INFO)
+
+        cli.set_log_level(3)
         fake_logging.assert_called_with(level=logging.DEBUG)
 
         cli.set_log_level(10)
