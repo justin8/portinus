@@ -75,7 +75,17 @@ class testService(unittest.TestCase):
     @patch('subprocess.check_output')
     @patch.object(portinus.ComposeSource, 'ensure')
     @patch.object(systemd_unit.Unit, 'ensure')
-    def test_ensure(self, fake_check_output, fake_compose_ensure, fake_unit_ensure):
+    def test_ensure_success(self, fake_unit_ensure, fake_compose_ensure, fake_check_output):
+        service = Service('foo')
+        service.ensure()
+        self.assertTrue(fake_compose_ensure.called)
+        self.assertTrue(fake_unit_ensure.called)
+
+    @patch('subprocess.check_output')
+    @patch.object(portinus.ComposeSource, 'ensure')
+    @patch.object(systemd_unit.Unit, 'ensure')
+    @patch.object(systemd_unit.Unit, 'stop', side_effect=FileNotFoundError)
+    def test_ensure_did_not_exist(self, fake_unit_stop, fake_unit_ensure, fake_compose_ensure, fake_check_output):
         service = Service('foo')
         service.ensure()
         self.assertTrue(fake_compose_ensure.called)
