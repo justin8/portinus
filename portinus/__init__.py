@@ -34,6 +34,13 @@ def get_template(file_name):
     return Template(template_contents)
 
 
+def _create_service_dir():
+    try:
+        os.mkdir(service_dir)
+    except FileExistsError:
+        pass
+
+
 class Application(object):
 
     log = logging.getLogger()
@@ -45,17 +52,11 @@ class Application(object):
         self.restart_timer = restart.Timer(name, restart_schedule=restart_schedule)
         self.monitor_service = monitor.Service(name)
 
-    def _create_service_dir(self):
-        try:
-            os.mkdir(service_dir)
-        except FileExistsError:
-            pass
-
     def exists(self):
         return self.service.exists()
 
     def ensure(self):
-        self._create_service_dir()
+        _create_service_dir()
         self.environment_file.ensure()
         self.service.ensure()
         self.restart_timer.ensure()

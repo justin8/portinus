@@ -65,7 +65,10 @@ def stop(name):
 
 @task.command()
 def list():
-    portinus.list()
+    try:
+        portinus.list()
+    except FileNotFoundError:
+        pass
 
 @task.command()
 @click.pass_context

@@ -52,7 +52,7 @@ class testApplication(unittest.TestCase):
     @patch.object(portinus.monitor, 'Service')
     @patch.object(portinus, 'Service')
     @patch.object(portinus, 'EnvironmentFile')
-    @patch.object(Application, '_create_service_dir')
+    @patch.object(portinus, '_create_service_dir')
     def test_ensure(self, fake__create_service_dir, fake_environment_file,
                     fake_service, fake_monitor_service, fake_restart_timer):
         app = Application('foo')
@@ -86,8 +86,7 @@ class testApplication(unittest.TestCase):
     def test__create_service_dir(self, fake_mkdir, fake_environment_file,
                                  fake_service, fake_monitor_service,
                                  fake_restart_timer):
-        app = Application('foo')
-        app._create_service_dir()
+        portinus._create_service_dir()
         fake_mkdir.assert_called_with(portinus.service_dir)
 
     @patch.object(portinus.restart, 'Timer')
@@ -96,6 +95,5 @@ class testApplication(unittest.TestCase):
     @patch.object(portinus, 'EnvironmentFile')
     @patch('os.mkdir', side_effect=FileExistsError)
     def test__create_service_dir_already_exists(self, fake_mkdir, fake_environment_file, fake_service, fake_monitor_service, fake_restart_timer):
-        app = Application('foo')
-        app._create_service_dir()
+        portinus._create_service_dir()
         fake_mkdir.assert_called_with(portinus.service_dir)

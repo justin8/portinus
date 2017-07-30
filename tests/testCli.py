@@ -24,6 +24,12 @@ class testCli(unittest.TestCase):
         self.assertFalse(result.exception)
         fake_list.assert_called_with()
 
+    @patch("portinus.list", side_effect=FileNotFoundError)
+    def test_list_no_dir(self, fake_list):
+        result = self.runner.invoke(cli.list)
+        self.assertFalse(result.exception)
+        fake_list.assert_called_with()
+
     @patch("portinus.list")
     def test_ls(self, fake_list):
         result = self.runner.invoke(cli.ls)
