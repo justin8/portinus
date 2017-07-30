@@ -77,3 +77,25 @@ class testApplication(unittest.TestCase):
         self.assertTrue(fake_service().remove.called)
         self.assertTrue(fake_monitor_service().remove.called)
         self.assertTrue(fake_restart_timer().remove.called)
+
+    @patch.object(portinus.restart, 'Timer')
+    @patch.object(portinus.monitor, 'Service')
+    @patch.object(portinus, 'Service')
+    @patch.object(portinus, 'EnvironmentFile')
+    @patch('os.mkdir')
+    def test__create_service_dir(self, fake_mkdir, fake_environment_file,
+                                 fake_service, fake_monitor_service,
+                                 fake_restart_timer):
+        app = Application('foo')
+        app._create_service_dir()
+        fake_mkdir.assert_called_with(portinus.service_dir)
+
+    @patch.object(portinus.restart, 'Timer')
+    @patch.object(portinus.monitor, 'Service')
+    @patch.object(portinus, 'Service')
+    @patch.object(portinus, 'EnvironmentFile')
+    @patch('os.mkdir', side_effect=FileExistsError)
+    def test__create_service_dir_already_exists(self, fake_mkdir, fake_environment_file, fake_service, fake_monitor_service, fake_restart_timer):
+        app = Application('foo')
+        app._create_service_dir()
+        fake_mkdir.assert_called_with(portinus.service_dir)
