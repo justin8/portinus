@@ -73,6 +73,17 @@ def stop(name):
         click.echo("Unable to find the specified service file")
         sys.exit(1)
 
+@task.command()
+@click.argument('name', required=True)
+def ps(name):
+    application = portinus.Application(name)
+    application.service.compose(['ps'])
+
+@task.command()
+@click.argument('name', required=True)
+def status(name):
+    application = portinus.Application(name)
+    application.service.compose(['ps'])
 
 @task.command()
 def list():

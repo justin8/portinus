@@ -170,6 +170,18 @@ class testCli(unittest.TestCase):
                 )
         self.assertTrue(fake_application().ensure.called)
 
+    @patch.object(portinus, "Application")
+    def test_ps(self, fake_application):
+        result = self.runner.invoke(cli.ps, ['foo'])
+        self.assertFalse(result.exception)
+        fake_application().service.compose.assert_called_with(['ps'])
+
+    @patch.object(portinus, "Application")
+    def test_status(self, fake_application):
+        result = self.runner.invoke(cli.status, ['foo'])
+        self.assertFalse(result.exception)
+        fake_application().service.compose.assert_called_with(['ps'])
+
     @patch('logging.basicConfig')
     def test_set_log_level(self, fake_logging):
         cli.set_log_level(0)
