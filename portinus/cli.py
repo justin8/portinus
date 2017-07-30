@@ -67,6 +67,12 @@ def stop(name):
 def list():
     portinus.list()
 
+@task.command()
+@click.pass_context
+def ls(ctx):
+    ctx.forward(list)
+    ctx.invoke(list)
+
 
 @task.command()
 @click.argument('name', required=True)

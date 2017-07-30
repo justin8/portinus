@@ -24,6 +24,12 @@ class testCli(unittest.TestCase):
         self.assertFalse(result.exception)
         fake_list.assert_called_with()
 
+    @patch("portinus.list")
+    def test_ls(self, fake_list):
+        result = self.runner.invoke(cli.ls)
+        self.assertFalse(result.exception)
+        fake_list.assert_called_with()
+
     @patch.object(portinus, "Application")
     def test_stop_success(self, fake_application):
         result = self.runner.invoke(cli.stop, ["foo"])
