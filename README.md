@@ -21,9 +21,9 @@ Docker Application Bundles deployed via swarm are great, but in order to support
 * systemd
 * python3
 
-### To create a service:
+### To create or update a service:
 ```
-sudo portinus create --name foo --source /home/justin/foo --env /home/justin/environment-file --restart daily
+sudo portinus ensure --name foo --source /home/justin/foo --env /home/justin/environment-file --restart daily
 ```
 
 * Where `/home/justin/foo` is a directory containing a `docker-compose.yml` file.
