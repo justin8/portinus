@@ -17,6 +17,7 @@ service_dir = '/usr/local/portinus-services'
 
 
 def list():
+    _ensure_service_dir()
     print("Available portinus services:")
     for i in sorted(Path(service_dir).iterdir()):
         if i.is_dir():
@@ -35,7 +36,7 @@ def get_template(file_name):
     return Template(template_contents)
 
 
-def _create_service_dir():
+def _ensure_service_dir():
     try:
         os.mkdir(service_dir)
     except FileExistsError:
@@ -57,7 +58,7 @@ class Application(object):
         return self.service.exists()
 
     def ensure(self):
-        _create_service_dir()
+        _ensure_service_dir()
         self.environment_file.ensure()
         self.service.ensure()
         self.restart_timer.ensure()
