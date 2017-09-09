@@ -1,4 +1,5 @@
 import logging
+from subprocess import check_output
 
 import portinus
 
@@ -26,9 +27,12 @@ class Service(object):
 
     def _generate_timer_file(self):
         template = portinus.get_template("monitor.timer")
+        portinus_monitor_path = check_output(["which", "portinus-monitor"])
+        portinus_monitor_path = portinus_monitor_path.decode().strip("\n")
 
         return template.render(
                 name=self.name,
+                portinus_monitor_path=portinus_monitor_path
                 )
 
     def ensure(self):
