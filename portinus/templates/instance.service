@@ -1,6 +1,7 @@
 [Unit]
 Description={{ name }} service
 After=network.target docker.service
+PartOf=docker.service
 
 [Service]
 Type=simple
