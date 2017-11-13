@@ -1,7 +1,7 @@
 import logging
 from operator import attrgetter
 
-from pathlib import Path
+import pathlib
 from jinja2 import Template
 
 from .cli import task
@@ -10,9 +10,9 @@ from .environmentfile import EnvironmentFile
 from .composesource import ComposeSource
 from .service import Service
 
-_script_dir = Path(__file__).resolve().parent
+_script_dir = pathlib.Path(__file__).resolve().parent
 template_dir = _script_dir.joinpath("templates")
-service_dir = Path("/usr/local/portinus-services")
+service_dir = pathlib.Path("/usr/local/portinus-services")
 
 
 def list():

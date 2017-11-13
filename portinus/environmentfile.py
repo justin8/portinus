@@ -1,3 +1,4 @@
+import pathlib
 import logging
 import os
 import shutil
@@ -6,12 +7,13 @@ import portinus
 
 log = logging.getLogger(__name__)
 
+
 class EnvironmentFile(object):
 
     def __init__(self, name, source_environment_file=None):
         self.name = name
         self._source_environment_file = source_environment_file
-        self.path = portinus.get_instance_dir(self.name) + ".environment"
+        self.path = pathlib.Path("{}.environment".format(portinus.get_instance_dir(self.name)))
         log.debug("Initialized EnvironmentFile for '{name}' from source: '{source_environment_file}'".format(name=name, source_environment_file=source_environment_file))
 
         if source_environment_file:

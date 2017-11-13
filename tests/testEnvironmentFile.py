@@ -5,10 +5,11 @@ import shutil
 
 from portinus import EnvironmentFile
 
+
 class testEnvironmentFile(unittest.TestCase):
-    
+
     def setUp(self):
-        self.test_dir = Path(__file__).absolute().parent
+        self.test_dir = Path(__file__).resolve().parent
         self.test_data_dir = Path(self.test_dir).joinpath("testdata")
         self.real_environment_file = str(self.test_data_dir.joinpath('real_app/environmentfile'))
 
