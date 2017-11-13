@@ -1,5 +1,4 @@
 import logging
-import os
 from operator import attrgetter
 
 from pathlib import Path
@@ -11,39 +10,53 @@ from .environmentfile import EnvironmentFile
 from .composesource import ComposeSource
 from .service import Service
 
-_script_dir = os.path.dirname(os.path.realpath(__file__))
-template_dir = os.path.join(_script_dir, 'templates')
-service_dir = '/usr/local/portinus-services'
+_script_dir = Path(__file__).resolve().parent
+template_dir = _script_dir.joinpath("templates")
+service_dir = Path("/usr/local/portinus-services")
 
 
 def list():
+    """
+    List the available services
+    """
     _ensure_service_dir()
     print("Available portinus services:")
-    for i in sorted(Path(service_dir).iterdir()):
+    for i in sorted(service_dir.iterdir()):
         if i.is_dir():
             print(i.name)
 
 
 def get_instance_dir(name):
-    return os.path.join(service_dir, name)
+    """
+    Get the directory used for storing the service files
+    """
+    return service_dir.joinpath(name)
 
 
 def get_template(file_name):
-    template_file = os.path.join(template_dir, file_name)
-    with open(template_file) as f:
+    """
+    Returns the named template
+    """
+    template_file = template_dir.joinpath(file_name)
+    with template_file.open() as f:
         template_contents = f.read()
 
     return Template(template_contents)
 
 
 def _ensure_service_dir():
-    try:
-        os.mkdir(service_dir)
-    except FileExistsError:
-        pass
+    """
+    Make sure that the service dir exists
+    """
+    service_dir.mkdir(exist_ok=True)
 
 
 class Application(object):
+    """
+    A portinus Application. This contains all the pieces of a portinus service
+    including the restart timer, monitor server, environment file and
+    service files themselves
+    """
 
     log = logging.getLogger()
 
@@ -58,6 +71,9 @@ class Application(object):
         return self.service.exists()
 
     def ensure(self):
+        """
+        Ensure all the application components are in the correct state
+        """
         _ensure_service_dir()
         self.environment_file.ensure()
         self.service.ensure()
@@ -65,6 +81,9 @@ class Application(object):
         self.monitor_service.ensure()
 
     def remove(self):
+        """
+        Remove all the application components
+        """
         self.service.remove()
         self.environment_file.remove()
         self.restart_timer.remove()
