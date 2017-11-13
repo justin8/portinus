@@ -13,7 +13,7 @@ class ComposeSource(object):
         self.name = name
         self.source = source
         self.path = portinus.get_instance_dir(name)
-        self.service_script = os.path.join(self.path, name)
+        self.service_script = self.path.joinpath(name)
         log.debug("Initialized ComposeSource for '{name}' from source: '{source}'".format(name=name, source=source))
 
     source = property(attrgetter('_source'))
@@ -30,7 +30,7 @@ class ComposeSource(object):
         self._source = value
 
     def _ensure_service_script(self):
-        service_script_template = os.path.join(portinus.template_dir, "service-script")
+        service_script_template = portinus.template_dir.joinpath("service-script")
         shutil.copy(service_script_template, self.service_script)
         os.chmod(self.service_script, 0o755)
 

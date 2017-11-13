@@ -80,7 +80,7 @@ class testApplication(unittest.TestCase):
         self.assertTrue(fake_monitor_service().remove.called)
         self.assertTrue(fake_restart_timer().remove.called)
 
-    @patch.object(portinus, 'service_dir')
-    def test__ensure_service_dir(self, fake_service_dir):
-        portinus._ensure_service_dir()
-        fake_service_dir.mkdir.assert_called()
+    def test__ensure_service_dir(self):
+        with patch.object(portinus, "service_dir") as fake_service_dir:
+            portinus._ensure_service_dir()
+            self.assertTrue(fake_service_dir.mkdir.called)
