@@ -96,7 +96,6 @@ def list():
 @click.pass_context
 def ls(ctx):
     ctx.forward(list)
-    ctx.invoke(list)
 
 
 @task.command()
