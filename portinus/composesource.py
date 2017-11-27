@@ -31,8 +31,8 @@ class ComposeSource(object):
 
     def _ensure_service_script(self):
         service_script_template = portinus.template_dir.joinpath("service-script")
-        shutil.copy(service_script_template, self.service_script)
-        os.chmod(self.service_script, 0o755)
+        shutil.copy(str(service_script_template), str(self.service_script))
+        self.service_script.chmod(0o755)
 
     def ensure(self):
         if not self.source:
@@ -40,14 +40,14 @@ class ComposeSource(object):
             raise(IOError("No valid source specified"))
         log.info("Copying source files for '{self.name}' to '{self.path}'")
         self.remove()
-        shutil.copytree(self.source, self.path, symlinks=True, copy_function=shutil.copy)
+        shutil.copytree(str(self.source), str(self.path), symlinks=True, copy_function=shutil.copy)
         self._ensure_service_script()
         log.debug("Successfully copied source files")
 
     def remove(self):
         log.info("Removing source files for '{name}' from '{path}'".format(name=self.name, path=self.path))
         try:
-            shutil.rmtree(self.path)
+            shutil.rmtree(str(self.path))
             log.debug("Successfully removed source files")
         except FileNotFoundError:
             log.debug("No source files found")

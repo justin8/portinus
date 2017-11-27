@@ -37,7 +37,7 @@ class EnvironmentFile(object):
     def remove(self):
         log.info("Removing environment file for {name}".format(name=self.name))
         try:
-            os.remove(self.path)
+            os.remove(str(self.path))
             log.debug("Sucessfully removed environment file")
         except FileNotFoundError:
             log.debug("No environment file found")
