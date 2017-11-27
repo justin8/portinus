@@ -14,6 +14,7 @@ setup(
     install_requires=[
         "click",
         "docker",
+        "docker-compose",
         "jinja2",
         "systemd_unit"
     ],
