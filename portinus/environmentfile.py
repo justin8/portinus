@@ -30,7 +30,7 @@ class EnvironmentFile(object):
     def ensure(self):
         if self:
             log.info("Creating/updating environment file for '{name}' at '{path}'".format(name=self.name, path=self.path))
-            shutil.copy(self._source_environment_file, self.path)
+            shutil.copy(str(self._source_environment_file), str(self.path))
         else:
             self.remove()
 
