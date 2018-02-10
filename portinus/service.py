@@ -40,6 +40,7 @@ class Service(object):
         except FileNotFoundError:
             pass
         self._source.ensure()
+        self.compose(["build"])
         self._systemd_service.ensure(content=self._generate_service_file())
 
     def remove(self):
