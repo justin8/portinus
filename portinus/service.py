@@ -59,4 +59,4 @@ class Service(object):
         log.info("Running compose for {name} with command: '{command}'".format(name=self.name, command=command))
         if not self.exists():
             raise ValueError("The specified service does not exist")
-        subprocess.call([self._source.service_script] + list(command))
+        subprocess.call([str(self._source.service_script)] + list(command))
