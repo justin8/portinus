@@ -20,7 +20,7 @@ class Service(object):
         log.debug("Initialized Service for '{name}' with source: '{source}'".format(name=name, source=source))
 
     def exists(self):
-        return os.path.isdir(portinus.get_instance_dir(self.name))
+        return os.path.isdir(str(portinus.get_instance_dir(self.name)))
 
     def _generate_service_file(self):
         start_command = "{service_script} up".format(service_script=self._source.service_script)
