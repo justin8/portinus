@@ -44,7 +44,7 @@ def get_monitored_compose_containers(name):
 
 def get_compose_container_ids(name):
     compose_source = portinus.ComposeSource(name)
-    service_script = compose_source.service_script
+    service_script = str(compose_source.service_script)
 
     compose_output = subprocess.check_output([service_script, "ps", "-q"], stderr=subprocess.DEVNULL).decode("utf-8")
     container_list = compose_output.split("\n")
