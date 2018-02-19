@@ -32,7 +32,7 @@ class ComposeSource(object):
     def _ensure_service_script(self):
         service_script_template = portinus.template_dir.joinpath("service-script")
         shutil.copy(str(service_script_template), str(self.service_script))
-        self.service_script.chmod(0o755)
+        os.chmod(str(self.service_script), 0o755)
 
     def ensure(self):
         if not self.source:

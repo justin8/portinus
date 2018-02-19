@@ -32,7 +32,7 @@ class testEnvironmentFile(unittest.TestCase):
     def test_remove(self, fake_remove):
         env = EnvironmentFile('foo')
         env.remove()
-        fake_remove.assert_called_with(env.path)
+        fake_remove.assert_called_with(str(env.path))
 
     @patch('os.remove', side_effect=FileNotFoundError)
     def test_remove_no_file(self, fake_remove):
@@ -41,13 +41,13 @@ class testEnvironmentFile(unittest.TestCase):
             env.remove()
         except FileNotFoundError:
             pass
-        fake_remove.assert_called_with(env.path)
+        fake_remove.assert_called_with(str(env.path))
 
     @patch('os.remove')
     def test_remove_with_source(self, fake_remove):
         env = EnvironmentFile('foo', source_environment_file=self.real_environment_file)
         env.remove()
-        fake_remove.assert_called_with(env.path)
+        fake_remove.assert_called_with(str(env.path))
 
     @patch.object(shutil, 'copy')
     def test_ensure(self, fake_copy):

@@ -44,10 +44,10 @@ class testService(unittest.TestCase):
     def test_compose(self, fake_call, fake_unit, fake_exists):
         service = Service('foo')
         service.compose(['ps'])
-        fake_call.assert_called_with([service._source.service_script, 'ps'])
+        fake_call.assert_called_with([str(service._source.service_script), 'ps'])
 
         service.compose(['logs', 'foo'])
-        fake_call.assert_called_with([service._source.service_script, 'logs', 'foo'])
+        fake_call.assert_called_with([str(service._source.service_script), 'logs', 'foo'])
 
     @patch.object(systemd_unit, 'Unit')
     def test_stop(self, fake_unit):
@@ -75,21 +75,25 @@ class testService(unittest.TestCase):
     @patch('subprocess.check_output')
     @patch.object(portinus.ComposeSource, 'ensure')
     @patch.object(systemd_unit.Unit, 'ensure')
-    def test_ensure_success(self, fake_unit_ensure, fake_compose_ensure, fake_check_output):
+    @patch.object(portinus.Service, 'compose')
+    def test_ensure_success(self, fake_service_compose, fake_unit_ensure, fake_compose_ensure, fake_check_output):
         service = Service('foo')
         service.ensure()
         self.assertTrue(fake_compose_ensure.called)
         self.assertTrue(fake_unit_ensure.called)
+        self.assertTrue(fake_service_compose.called_with(["build"]))
 
     @patch('subprocess.check_output')
     @patch.object(portinus.ComposeSource, 'ensure')
     @patch.object(systemd_unit.Unit, 'ensure')
     @patch.object(systemd_unit.Unit, 'stop', side_effect=FileNotFoundError)
-    def test_ensure_did_not_exist(self, fake_unit_stop, fake_unit_ensure, fake_compose_ensure, fake_check_output):
+    @patch.object(portinus.Service, 'compose')
+    def test_ensure_did_not_exist(self, fake_service_compose, fake_unit_stop, fake_unit_ensure, fake_compose_ensure, fake_check_output):
         service = Service('foo')
         service.ensure()
         self.assertTrue(fake_compose_ensure.called)
         self.assertTrue(fake_unit_ensure.called)
+        self.assertTrue(fake_service_compose.called_with(["build"]))
 
     @patch('subprocess.check_output')
     def test__generate_service_file(self, fake_check_output):
