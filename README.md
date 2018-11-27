@@ -1,6 +1,9 @@
 # Portinus
 Portinus is a tool that creates a systemd service out of a docker-compose.yml file.
 
+## Unmaintained!
+Just a warning; this is now unmaintained, since docker swarm updates in mid-2018 all the things I personally required from it that were missing are for the most part either working or have workarounds I prefer to maintain over maintaining this stack. So this repository is now just around for historical purposes
+
 ## Why Portinus? Why not use docker application bundles/swarm/deploy?
 Docker Application Bundles deployed via swarm are great, but in order to support horizontal scaling for many of the features in docker, you lose much of the composability and many features, such as network_modes and some other more complex interdependencies.
 
